@@ -1,0 +1,9 @@
+{
+  "name": "team-project",
+
+  "dependencies": {
+    "jquery": "1.11.2",
+    "normalize.css": "~3.0.3",
+    "jquery-placeholder": "~2.1.1"
+  }
+}

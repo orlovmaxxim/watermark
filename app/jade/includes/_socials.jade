@@ -1,0 +1,17 @@
+//
+   Created by Vital on 26.08.2015.
+ul.language
+   li.language-item
+      a.language-link.active
+         | РУС
+   li.b-language-item
+      a.language-link
+         | ENG
+.share
+   .share-icon
+      a(href="#").share-icon-link Like Me
+   ul.share-socials-list
+      each val, index in {'fb-icon':'FaceBook' ,'tw-icon':'Twitter' ,'vk-icon':'ВКонтакте'}
+         li.share-socials-item
+            a(href="#", class="#{index}").share-socials-link #{val}
+

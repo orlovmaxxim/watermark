@@ -1,0 +1,27 @@
+//
+   Created by Vital on 26.08.2015.
+section.section.location.disabled
+   .disabled-area
+   .switchers
+      a(href="#",data-switch="multi").switcher.multi
+      a(href="#",data-switch="single").switcher.single.active
+
+   .form-label.extra-spaced Положение
+
+   .location
+      ul.grid-list
+         each item in ['top-left', 'top-center', 'top-right', 'mid-left', 'mid-center', 'mid-right', 'btm-left', 'btm-center', 'btm-right']
+            li.b-grid-item(data-pos=item)
+
+      .controls
+         .control-item
+            .control-tip.vertical X
+            input.control(type='text' name='xpos', value='0')
+            a.control-arrow.top(href='')
+            a.control-arrow.btm(href='')
+
+         .control-item
+            .control-tip.horizontal Y
+            input.control(type='text' name='ypos', value='0')
+            a.control-arrow.top(href='')
+            a.control-arrow.btm(href='')

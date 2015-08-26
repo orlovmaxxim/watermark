@@ -1,0 +1,50 @@
+/* -------------- Расширения и вставки
+------------------------------------------------------------------*/
+@import "value";
+@mixin center-pos ($width:null) {
+  width: $width;
+  margin: 0 auto;
+  box-sizing: content-box;
+}
+
+.table-cell-top {
+
+}
+.list-reset {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.cfix {
+  &:before,
+  &:after {
+    content: "";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+.to-right {
+  float: right;
+}
+.to-left {
+  float: left;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+body {
+  font: 1em/1.4 $roboto-l;
+  color: $color-black;
+}
+
+
+
+

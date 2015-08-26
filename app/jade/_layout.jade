@@ -1,0 +1,61 @@
+//
+   Created by Vital on 26.08.2015.
+doctype html
+html(lang='ru-RU')
+   head
+      meta(charset='utf-8')
+      meta(http-equiv='X-UA-Compatible', content='IE=edge')
+      meta(name='description', content='')
+      meta(name='keywords', content='')
+      meta(name='author', content='')
+      link(rel='shortcut icon', href='favicon.ico', type='image/x-icon')
+      link(rel='icon', href='favicon.ico', type='image/x-icon')
+      block title
+         title Генератор водяных знаков
+      // build:css css/vendor.min.css
+      // bower:css
+      link(rel='stylesheet', href='/bower/normalize.css/normalize.css')
+      // endbower
+      // endbuild
+      // build:css css/styles.min.css
+      link(rel='stylesheet', href='css/styles.css')
+      // endbuild
+      script(src='js/vendor/modernizr.min.js')
+   body
+      <!--[if lt IE 8]>
+      <p class='b-unhappy-browser'>Вы используете устаревший браузер. Пожалуйста
+      <a href="http://browsehappy.com/">обновите</a> его.</p>
+      <![endif]-->
+      .page
+         .page-gradient
+         // Основной контент
+         .main-container
+            .left-panel
+               block socials
+            .columns
+               .main
+                  block main
+               .settings
+                  block aside
+         // Основной контент конец
+      // Подвал
+      include includes/_footer
+      // Подвал конец
+      // JS begin
+      // build:js js/vendor/vendor.min.js
+      // bower:js
+      script(src='/bower/jquery/dist/jquery.js')
+      script(src='/bower/jquery-placeholder/jquery.placeholder.js')
+      // endbower
+      // endbuild
+      //vendor
+      script(src='js/vendor/jquery-ui.min.js')
+      // Скрипты для работы с загрузкой картинок
+      // build:js
+      // endbuild
+      <!--[if IE 8]>
+      <script src='js/vendor/selectivizr.min.js'></script>
+      <![endif]-->
+      // build:js js/scripts.min.js
+
+      // endbuild

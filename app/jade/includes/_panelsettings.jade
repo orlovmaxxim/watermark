@@ -1,0 +1,15 @@
+//
+   Created by Vital on 26.08.2015.
+.settings-title Настройки
+form.form(action='php/', enctype='multipart/form-data', method='post')
+   include _loading
+   include _position
+   include _opacity
+   include _buttons
+   input.hidden-switch(type='hidden', name='mode', value='single')
+   input(type='hidden', name='opacity', value='100')
+   input(type='hidden', name='yposMulti', value='0')
+   input(type='hidden', name='xposMulti', value='0')
+   input(type='hidden', name='patternHeight')
+   input(type='hidden', name='patternWidth')
+

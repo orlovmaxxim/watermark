@@ -1,0 +1,19 @@
+//
+   Created by Vital on 26.08.2015.
+section.section.upload
+   .form-line
+      .form-label Исходное изображение
+      .custom-upload
+         input.input.input-file(type="file", name='files[]', data-url='php/')
+         .imitation-upload
+            .icon-upload
+            input.input(type='text', name='basicImage', 'readonly', placeholder='Image.jpg')
+
+   .form-line
+      .form-label Водяной знак
+      .custom-upload.m-disabled
+         input.input.input-file(type="file", name='files[]', data-url='php/', disabled)
+         .imitation-upload
+            .icon-upload
+            input.input(type='text', name='waterMark', 'readonly', placeholder='Image.png')
+
