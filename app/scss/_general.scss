@@ -45,6 +45,302 @@ body {
   color: $color-black;
 }
 
+/* = Layout
+================================================*/
+.page {
+  height: 100%;
+  min-width: 1140px;
+  min-height: 760px;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  text-align: center;
+  background: #a9837f url('../img/bg.jpg') no-repeat 100% 50%;
+  background-size: cover;
+  font-size: 0;
 
+  &:after {
+    content: '';
+    height: 40px;
+    display: block;
+  }
+
+  &:before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+    width: 0;
+  }
+}
+.page-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #986a78;
+  background: -ms-linear-gradient(left, #986a78 0%,#bd8880 50%,#ab847f 100%);
+  background: linear-gradient(to right, #986a78 0%, #bd8880 50%, #ab847f 100%);
+  opacity: 0.4;
+}
+.container {
+  @include center-pos ($width:960px);
+  @extend .cfix;
+  text-align: left;
+}
+.main-container {
+  font: 1em/1.4 $roboto-l;
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  width: 100%;
+}
+
+
+/* = Columns
+================================================*/
+.columns {
+  @extend .container;
+  display: table;
+}
+.main {
+  display: table-cell;
+  vertical-align: top;
+  background: #5f5f62;
+  background: rgba(46, 54, 65, 0.64);
+}
+.settings {
+  width: 260px;
+  display: table-cell;
+  vertical-align: top;
+  background: #f1f1f5;
+}
+
+
+/* = Left Panel
+================================================*/
+.left-panel {
+  width: 43px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: normal;
+  opacity: 0.7;
+}
+
+
+/* = Language toggle
+================================================*/
+.language {
+  background: #f1f1f5;
+  margin: 0 0 18px 0;
+  padding: 0;
+  text-align: center;
+  letter-spacing: -1px;
+
+  &-item {
+    @extend .list-reset;
+
+    &:first-child {
+      border-bottom: 1px solid #abaeb3;
+    }
+  }
+
+  &-link {
+    text-decoration: none;
+    color: #8e9298;
+    font-size: 20px;
+    display: block;
+    padding: 3px 0;
+    cursor: pointer;
+    opacity: 0.5;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &.m-active {
+      color: darken(#8e9298, 20%);
+      opacity: 1;
+    }
+  }
+}
+
+
+/* = Share
+================================================*/
+.share {
+  position: relative;
+  width: 43px;
+  @extend .cfix;
+}
+.share-icon {
+  width: 43px;
+  height: 41px;
+  position: absolute;
+  overflow: hidden;
+  opacity: 0.6;
+
+  &-link {
+    display: block;
+    background: #fff url(../img/social-ikons.png) -99px -12px no-repeat;
+    text-indent: -999px;
+    width: 43px;
+    height: 41px;
+
+    &:hover {
+      background-position: -156px -12px;
+    }
+  }
+}
+.share-socials-list {
+  margin: 0;
+  padding: 0;
+  width: 43px;
+  overflow: hidden;
+  background: #fff;
+  opacity: 0.6;
+  position: absolute;
+  left: -43px;
+
+  &-item {
+    @extend .list-reset;
+  }
+}
+.share-socials-link {
+  display: block;
+  height: 41px;
+  width: 43px;
+  text-indent: -999px;
+  background: url(../img/social-ikons.png) no-repeat;
+
+  &.fb-icon {
+    background-position: -2px -7px;
+    &:hover {
+      background-position: -47px -7px;
+    }
+  }
+  &.tw-icon {
+    background-position: -212px -4px;
+    &:hover {
+      background-position: -269px -4px;
+    }
+  }
+  &.vk-icon {
+    background-position: -328px -4px;;
+    &:hover {
+      background-position: -389px -4px;
+    }
+  }
+}
+
+
+/* = Footer
+================================================*/
+.footer {
+  position: relative;
+  height: 40px;
+  margin-top: -40px;
+}
+.copyright {
+  font: 12px/1 $roboto-t;
+  color: $color-white;
+  text-align: center;
+}
+
+/* = Spinner and Overlay
+================================================*/
+/* overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 1000;
+  text-align: center;
+
+  &:before{
+    content: '';
+    height: 100%;
+    width: 0;
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+/* spinner */
+.spinner {
+  z-index: 1001;
+  position: relative;
+  display: inline-block;
+
+  > div {
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    border-radius: 100%;
+    display: inline-block;
+    animation: bouncedelay 1.4s infinite ease-in-out;
+    animation-fill-mode: both;
+  }
+
+  .bounce1 {
+    animation-delay: -0.32s;
+  }
+
+  .bounce2 {
+    animation-delay: -0.16s;
+  }
+}
+
+/* spinner: animation */
+@keyframes bouncedelay {
+  0%, 80%, 100% {
+    transform: scale(0.0);
+  } 40% {
+      transform: scale(1.0);
+    }
+}
+
+
+/* = Unhappy browser
+================================================*/
+.unhappy-browser {
+  margin: 0.2em 0;
+  background: #ccc;
+  color: #000;
+  padding: 0.3em;
+  text-align: center;
+}
+
+
+/* = Fixes for old browsers
+================================================*/
+/* css animation */
+.no-cssanimations {
+  .overlay {
+    display: none;
+  }
+}
+
+/* opacity */
+.no-opacity {
+  .page {
+    background: #a9837f;
+  }
+  .page-gradient {
+    display: none;
+  }
+  .language {
+    background: #ddd4d7;
+  }
+  .share-icon-link,
+  .share-socials-list {
+    background-color: #d0bebd;
+  }
+}
 
 

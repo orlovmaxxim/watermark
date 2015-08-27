@@ -1,0 +1,463 @@
+/* = Settings
+================================================*/
+.settings {
+  padding: 10px 0;
+}
+.settings-title {
+  font: 26px/1 $roboto-l;
+  text-align: center;
+  margin: 17px 0;
+}
+
+.section:not(.btns) {
+  position: relative;
+  padding: 18px 20px;
+  border-bottom: 1px solid #f4c3c2;
+
+  &:after,
+  &:before {
+    top: 100%;
+    left: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+
+  &:after {
+    border-top-color: #f1f1f5;
+    border-width: 9px;
+    margin-left: -9px;
+  }
+
+  &:before {
+    border-top-color: #f4c3c2;
+    border-width: 10px;
+    margin-left: -10px;
+  }
+}
+.section.btns {
+  padding: 56px 10px 10px;
+  position: relative;
+  @extend .m-cfix;
+}
+
+
+/* = Form
+================================================*/
+.form-line {
+  margin-bottom: 12px;
+
+  & + & {
+    margin-top: 24px;
+  }
+}
+.form-label {
+  font: 14px/1 $roboto-l;
+  margin-bottom: 9px;
+  &.extra-spaced {
+    margin-bottom: 35px;
+  }
+}
+
+/* form: controls */
+.input {
+  height: 27px;
+  font: 12px/27px $roboto-l;
+  color: $color-blue;
+  padding: 4px;
+  border: 1px solid $color-blue;
+  border-radius: $radius;
+  width: 100%;
+
+  //&::placeholder {
+  //  color: $color-blue;
+  //  opacity: 2;
+  //  transition: opacity 0.3s ease;
+  //  text-overflow: ellipsis;
+  //}
+  //&:focus::placeholder {
+  //  opacity: 0;
+  //  transition: opacity 0.3s ease;
+  //}
+}
+
+/* form: custom upload */
+.custom-upload {
+  position: relative;
+  height: 27px;
+
+  .input {
+    height: 100%;
+    line-height: 17px;
+  }
+}
+
+.input-file {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  z-index: 3;
+}
+.fake-upload {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  padding: 0;
+  z-index: 1;
+}
+.fake-input {
+  padding-right: 45px;
+}
+.icon-upload {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 39px;
+  background: $color-pink url('../img/download.png') no-repeat 50% 49%;
+  border-radius: 0 $radius $radius 0;
+  z-index: 2;
+}
+
+/* form: custom upload: hover */
+.custom-upload {
+  &:hover {
+    .icon-upload {
+      background-color: darken($color-pink, 3%);
+    }
+  }
+  &:active {
+    .icon-upload {
+      background-color: darken($color-pink, 5%);
+    }
+  }
+  &.disabled:hover {
+    .icon-upload {
+      background-color: $color-pink;
+    }
+  }
+}
+
+
+/* = Location section
+================================================*/
+.location {
+  @extend .cfix;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+/* grid list */
+.grid-list {
+  @extend .list-reset;
+  @extend .cfix;
+  border: solid $color-blue;
+  border-width: 0 1px 1px 0;
+  display: inline-block;
+  border-radius: $radius;
+  overflow: hidden;
+  float: left;
+}
+.grid-item {
+  width: 34px;
+  height: 34px;
+  display: block;
+  border: solid $color-blue;
+  border-width: 1px 0 0 1px;
+  float: left;
+  background: $color-light-blue;
+  cursor: pointer;
+
+  &.active {
+    background: $color-pink;
+  }
+
+  &:nth-child(3n+1) {
+    clear: left;
+  }
+  &:nth-child(3n+3) {
+    clear: right;
+  }
+  &:first-child {
+    border-top-left-radius: $radius;
+  }
+  &:last-child {
+    border-bottom-right-radius: $radius;
+  }
+  &:nth-last-child(3) {
+    border-bottom-left-radius: $radius;
+  }
+  &:nth-child(3) {
+    border-top-right-radius: $radius;
+  }
+}
+
+/* controls */
+.controls {
+  float: right;
+  text-align: right;
+
+  &.for-multi {
+    .horizontal,
+    .vertical {
+      text-indent: 9999px;
+    }
+
+    .horizontal {
+      background:url(../img/hor-arrow.png) center center no-repeat;
+      width: 29px;
+      height: 9px;
+      left: -15px;
+      top: 18px;
+    }
+    .vertical {
+      background:url(../img/vert-arrow.png) center center no-repeat;
+      width: 11px;
+      height: 30px;
+      left: -6px;
+      top: 9px;
+    }
+  }
+}
+.control-item {
+  position: relative;
+  padding: 0 18px;
+  margin-bottom: 12px;
+}
+.control {
+  font: 24px/1 $roboto-t;
+  padding: 10px 0;
+  color: $color-black;
+  width: 46px;
+  height: 45px;
+  text-align: center;
+  border: 1px solid $color-blue;
+  border-radius: $radius;
+  background: none;
+}
+
+/* controls: tip */
+.control-tip {
+  font: 16px/1 $roboto-l;
+  position: absolute;
+  left: 0;
+  top: 15px;
+}
+
+/* controls: arrows */
+.control-arrow {
+  position: absolute;
+  right: 0;
+  display: block;
+  width: 13px;
+  height: 8px;
+  cursor: pointer;
+  background: url('../img/Arrows.png') no-repeat 0 -13px;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -5px;
+    right: -10px;
+    bottom: -10px;
+  }
+
+  &.top {
+    top: 4px;
+    &:hover {
+      background-position: 0 0;
+    }
+    &.disabled:hover {
+      background-position: 0 -13px;
+    }
+  }
+  &.btm {
+    bottom: 4px;
+    background-position: 0 -26px;
+    &:hover {
+      background-position: 0 -39px;
+    }
+    &.disabled:hover {
+      background-position: 0 -26px;
+    }
+  }
+}
+
+
+/* = Switcher
+================================================*/
+.switchers {
+  position: absolute;
+  height: 19px;
+  width: 48px;
+  top: 10px;
+  right: 10px;
+  overflow: hidden;
+}
+.switcher {
+  height: 19px;
+  width: 19px;
+  cursor: pointer;
+}
+.switcher.multi {
+  float: left;
+  background: url(../img/switcher-spr.png) -15px -15px no-repeat;
+
+  &.active {
+    background-position: -64px -15px;
+  }
+}
+.switcher.single {
+  float: right;
+  background: url(../img/switcher-spr.png) -113px -15px no-repeat;
+
+  &.active {
+    background-position: -162px -15px;
+  }
+}
+
+/* grid interval */
+.intervals {
+  position: absolute;
+  z-index: 99;
+  left: 0;
+  top: 0;
+  width: 103px;
+  height: 103px;
+  overflow: hidden;
+}
+.interval.hor {
+  background: $color-pink;
+  height: 100%;
+  width: 1px;
+  margin: 0 auto;
+}
+.interval.vert {
+  background: $color-pink;
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+}
+
+
+/* = Opacity section
+================================================*/
+.wmark-opacity {
+  margin: 30px 0 14px;
+}
+.opacity-slider {
+  border-radius: 2px;
+  border: none;
+  height: 3px;
+  position: relative;
+  background-color: $color-light-blue;
+}
+.ui-slider {
+  &-range {
+    position: absolute;
+    background-color: $color-blue;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    border-radius: $radius;
+    border: none;
+  }
+
+  &-handle {
+    border: 7px solid $color-light-blue;
+    border-radius: 50%;
+    cursor: pointer;
+    position: absolute;
+    margin-left: -10px;
+    top: -10px;
+    z-index: 2;
+    background-color: $color-blue;
+    height: 22px;
+    width: 22px;
+    content: " ";
+    display: block;
+    box-shadow: 0 1px 2px #969698;
+
+    &.ui-state-active {
+      background-color: $color-pink;
+    }
+  }
+}
+
+
+/* = Buttons section
+================================================*/
+.btn {
+  font: 18px/1 $roboto-l;
+  color: $color-white;
+  border: none;
+  background: $color-pink;
+  border-radius: $radius;
+  min-width: 99px;
+  padding: 12px 4px;
+  text-align: center;
+  display: inline-block;
+
+  &:hover {
+    background: darken($color-pink, 3%);
+  }
+  &:active {
+    background: darken($color-pink, 5%);
+  }
+
+  &.neg {
+    background: #c1cfd9;
+
+    &:hover {
+      background: darken(#c1cfd9, 3%);
+    }
+    &:active {
+      background: darken(#c1cfd9, 5%);
+    }
+  }
+
+}
+
+
+/* = Disable
+================================================*/
+.disabled-area {
+  position:absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index:99;
+}
+.disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+
+/* = Fixes for old browsers
+================================================*/
+/* opacity */
+.no-opacity {
+  .input-file {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  }
+  .disabled .fake-upload {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
+  }
+}

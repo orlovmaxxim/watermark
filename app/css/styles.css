@@ -25,17 +25,21 @@
 
 /* -------------- Расширения и вставки
 ------------------------------------------------------------------*/
-.list-reset {
+.list-reset, .language-item, .share-socials-list-item, .grid-list {
   list-style-type: none;
   margin: 0;
   padding: 0; }
 
 .cfix:before,
-.cfix:after {
+.container:before,
+.columns:before, .share:before,
+.location:before,
+.grid-list:before,
+.cfix:after, .container:after, .columns:after, .share:after, .location:after, .grid-list:after {
   content: "";
   display: table; }
 
-.cfix:after {
+.cfix:after, .container:after, .columns:after, .share:after, .location:after, .grid-list:after {
   clear: both; }
 
 .to-right {
@@ -53,3 +57,651 @@ html, body {
 body {
   font: 1em/1.4 "robotolight";
   color: #2e3641; }
+
+/* = Layout
+================================================*/
+.page {
+  height: 100%;
+  min-width: 1140px;
+  min-height: 760px;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  text-align: center;
+  background: #a9837f url("../img/bg.jpg") no-repeat 100% 50%;
+  background-size: cover;
+  font-size: 0; }
+  .page:after {
+    content: '';
+    height: 40px;
+    display: block; }
+  .page:before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+    width: 0; }
+
+.page-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #986a78;
+  background: linear-gradient(to right, #986a78 0%, #bd8880 50%, #ab847f 100%);
+  opacity: 0.4; }
+
+.container, .columns {
+  width: 960px;
+  margin: 0 auto;
+  box-sizing: content-box;
+  text-align: left; }
+
+.main-container {
+  font: 1em/1.4 "robotolight";
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  width: 100%; }
+
+/* = Columns
+================================================*/
+.columns {
+  display: table; }
+
+.main {
+  display: table-cell;
+  vertical-align: top;
+  background: #5f5f62;
+  background: rgba(46, 54, 65, 0.64); }
+
+.settings {
+  width: 260px;
+  display: table-cell;
+  vertical-align: top;
+  background: #f1f1f5; }
+
+/* = Left Panel
+================================================*/
+.left-panel {
+  width: 43px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: normal;
+  opacity: 0.7; }
+
+/* = Language toggle
+================================================*/
+.language {
+  background: #f1f1f5;
+  margin: 0 0 18px 0;
+  padding: 0;
+  text-align: center;
+  letter-spacing: -1px; }
+  .language-item:first-child {
+    border-bottom: 1px solid #abaeb3; }
+  .language-link {
+    text-decoration: none;
+    color: #8e9298;
+    font-size: 20px;
+    display: block;
+    padding: 3px 0;
+    cursor: pointer;
+    opacity: 0.5; }
+    .language-link:hover {
+      opacity: 0.8; }
+    .language-link.m-active {
+      color: #5c5f64;
+      opacity: 1; }
+
+/* = Share
+================================================*/
+.share {
+  position: relative;
+  width: 43px; }
+
+.share-icon {
+  width: 43px;
+  height: 41px;
+  position: absolute;
+  overflow: hidden;
+  opacity: 0.6; }
+  .share-icon-link {
+    display: block;
+    background: #fff url(../img/social-ikons.png) -99px -12px no-repeat;
+    text-indent: -999px;
+    width: 43px;
+    height: 41px; }
+    .share-icon-link:hover {
+      background-position: -156px -12px; }
+
+.share-socials-list {
+  margin: 0;
+  padding: 0;
+  width: 43px;
+  overflow: hidden;
+  background: #fff;
+  opacity: 0.6;
+  position: absolute;
+  left: -43px; }
+
+.share-socials-link {
+  display: block;
+  height: 41px;
+  width: 43px;
+  text-indent: -999px;
+  background: url(../img/social-ikons.png) no-repeat; }
+  .share-socials-link.fb-icon {
+    background-position: -2px -7px; }
+    .share-socials-link.fb-icon:hover {
+      background-position: -47px -7px; }
+  .share-socials-link.tw-icon {
+    background-position: -212px -4px; }
+    .share-socials-link.tw-icon:hover {
+      background-position: -269px -4px; }
+  .share-socials-link.vk-icon {
+    background-position: -328px -4px; }
+    .share-socials-link.vk-icon:hover {
+      background-position: -389px -4px; }
+
+/* = Footer
+================================================*/
+.footer {
+  position: relative;
+  height: 40px;
+  margin-top: -40px; }
+
+.copyright {
+  font: 12px/1 "robotothin";
+  color: #fff;
+  text-align: center; }
+
+/* = Spinner and Overlay
+================================================*/
+/* overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  text-align: center; }
+  .overlay:before {
+    content: '';
+    height: 100%;
+    width: 0;
+    display: inline-block;
+    vertical-align: middle; }
+
+/* spinner */
+.spinner {
+  z-index: 1001;
+  position: relative;
+  display: inline-block; }
+  .spinner > div {
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    border-radius: 100%;
+    display: inline-block;
+    -webkit-animation: bouncedelay 1.4s infinite ease-in-out;
+    animation: bouncedelay 1.4s infinite ease-in-out;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both; }
+  .spinner .bounce1 {
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s; }
+  .spinner .bounce2 {
+    -webkit-animation-delay: -0.16s;
+    animation-delay: -0.16s; }
+
+/* spinner: animation */
+@-webkit-keyframes bouncedelay {
+  0%, 80%, 100% {
+    -webkit-transform: scale(0);
+    transform: scale(0); }
+  40% {
+    -webkit-transform: scale(1);
+    transform: scale(1); } }
+@keyframes bouncedelay {
+  0%, 80%, 100% {
+    -webkit-transform: scale(0);
+    transform: scale(0); }
+  40% {
+    -webkit-transform: scale(1);
+    transform: scale(1); } }
+
+/* = Unhappy browser
+================================================*/
+.unhappy-browser {
+  margin: 0.2em 0;
+  background: #ccc;
+  color: #000;
+  padding: 0.3em;
+  text-align: center; }
+
+/* = Fixes for old browsers
+================================================*/
+/* css animation */
+.no-cssanimations .overlay {
+  display: none; }
+
+/* opacity */
+.no-opacity .page {
+  background: #a9837f; }
+
+.no-opacity .page-gradient {
+  display: none; }
+
+.no-opacity .language {
+  background: #ddd4d7; }
+
+.no-opacity .share-icon-link,
+.no-opacity .share-socials-list {
+  background-color: #d0bebd; }
+
+.main-section {
+  padding: 18px 24px 25px; }
+
+.main-area-title {
+  font: 35px/1 "robotothin";
+  color: #fff;
+  margin-bottom: 58px; }
+
+.main-area {
+  width: 100%;
+  max-width: 650px;
+  height: 534px;
+  background: #fff;
+  position: relative;
+  overflow: hidden; }
+
+.bmain-image-wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  overflow: hidden; }
+
+#image {
+  max-width: 100%;
+  max-height: 100%; }
+
+.main-wmark-wrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden; }
+
+.watermark {
+  cursor: move;
+  float: left; }
+
+#loadFrame {
+  display: none; }
+
+/* = Settings
+================================================*/
+.settings {
+  padding: 10px 0; }
+
+.settings-title {
+  font: 26px/1 "robotolight";
+  text-align: center;
+  margin: 17px 0; }
+
+.section:not(.btns) {
+  position: relative;
+  padding: 18px 20px;
+  border-bottom: 1px solid #f4c3c2; }
+  .section:not(.btns):after,
+  .section:not(.btns):before {
+    top: 100%;
+    left: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none; }
+  .section:not(.btns):after {
+    border-top-color: #f1f1f5;
+    border-width: 9px;
+    margin-left: -9px; }
+  .section:not(.btns):before {
+    border-top-color: #f4c3c2;
+    border-width: 10px;
+    margin-left: -10px; }
+
+.section.btns {
+  padding: 56px 10px 10px;
+  position: relative; }
+
+/* = Form
+================================================*/
+.form-line {
+  margin-bottom: 12px; }
+  .form-line + .form-line {
+    margin-top: 24px; }
+
+.form-label {
+  font: 14px/1 "robotolight";
+  margin-bottom: 9px; }
+  .form-label.extra-spaced {
+    margin-bottom: 35px; }
+
+/* form: controls */
+.input {
+  height: 27px;
+  font: 12px/27px "robotolight";
+  color: #9eb2c0;
+  padding: 4px;
+  border: 1px solid #9eb2c0;
+  border-radius: 3px;
+  width: 100%; }
+
+/* form: custom upload */
+.custom-upload {
+  position: relative;
+  height: 27px; }
+  .custom-upload .input {
+    height: 100%;
+    line-height: 17px; }
+
+.input-file {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  z-index: 3; }
+
+.fake-upload {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  padding: 0;
+  z-index: 1; }
+
+.fake-input {
+  padding-right: 45px; }
+
+.icon-upload {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 39px;
+  background: #f97e76 url("../img/download.png") no-repeat 50% 49%;
+  border-radius: 0 3px 3px 0;
+  z-index: 2; }
+
+/* form: custom upload: hover */
+.custom-upload:hover .icon-upload {
+  background-color: #f87067; }
+
+.custom-upload:active .icon-upload {
+  background-color: #f8675e; }
+
+.custom-upload.disabled:hover .icon-upload {
+  background-color: #f97e76; }
+
+/* = Location section
+================================================*/
+.location {
+  margin-bottom: 6px;
+  position: relative; }
+
+/* grid list */
+.grid-list {
+  border: solid #9eb2c0;
+  border-width: 0 1px 1px 0;
+  display: inline-block;
+  border-radius: 3px;
+  overflow: hidden;
+  float: left; }
+
+.grid-item {
+  width: 34px;
+  height: 34px;
+  display: block;
+  border: solid #9eb2c0;
+  border-width: 1px 0 0 1px;
+  float: left;
+  background: #dbe1e8;
+  cursor: pointer; }
+  .grid-item.active {
+    background: #f97e76; }
+  .grid-item:nth-child(3n+1) {
+    clear: left; }
+  .grid-item:nth-child(3n+3) {
+    clear: right; }
+  .grid-item:first-child {
+    border-top-left-radius: 3px; }
+  .grid-item:last-child {
+    border-bottom-right-radius: 3px; }
+  .grid-item:nth-last-child(3) {
+    border-bottom-left-radius: 3px; }
+  .grid-item:nth-child(3) {
+    border-top-right-radius: 3px; }
+
+/* controls */
+.controls {
+  float: right;
+  text-align: right; }
+  .controls.for-multi .horizontal,
+  .controls.for-multi .vertical {
+    text-indent: 9999px; }
+  .controls.for-multi .horizontal {
+    background: url(../img/hor-arrow.png) center center no-repeat;
+    width: 29px;
+    height: 9px;
+    left: -15px;
+    top: 18px; }
+  .controls.for-multi .vertical {
+    background: url(../img/vert-arrow.png) center center no-repeat;
+    width: 11px;
+    height: 30px;
+    left: -6px;
+    top: 9px; }
+
+.control-item {
+  position: relative;
+  padding: 0 18px;
+  margin-bottom: 12px; }
+
+.control {
+  font: 24px/1 "robotothin";
+  padding: 10px 0;
+  color: #2e3641;
+  width: 46px;
+  height: 45px;
+  text-align: center;
+  border: 1px solid #9eb2c0;
+  border-radius: 3px;
+  background: none; }
+
+/* controls: tip */
+.control-tip {
+  font: 16px/1 "robotolight";
+  position: absolute;
+  left: 0;
+  top: 15px; }
+
+/* controls: arrows */
+.control-arrow {
+  position: absolute;
+  right: 0;
+  display: block;
+  width: 13px;
+  height: 8px;
+  cursor: pointer;
+  background: url("../img/Arrows.png") no-repeat 0 -13px; }
+  .control-arrow:before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -5px;
+    right: -10px;
+    bottom: -10px; }
+  .control-arrow.top {
+    top: 4px; }
+    .control-arrow.top:hover {
+      background-position: 0 0; }
+    .control-arrow.top.disabled:hover {
+      background-position: 0 -13px; }
+  .control-arrow.btm {
+    bottom: 4px;
+    background-position: 0 -26px; }
+    .control-arrow.btm:hover {
+      background-position: 0 -39px; }
+    .control-arrow.btm.disabled:hover {
+      background-position: 0 -26px; }
+
+/* = Switcher
+================================================*/
+.switchers {
+  position: absolute;
+  height: 19px;
+  width: 48px;
+  top: 10px;
+  right: 10px;
+  overflow: hidden; }
+
+.switcher {
+  height: 19px;
+  width: 19px;
+  cursor: pointer; }
+
+.switcher.multi {
+  float: left;
+  background: url(../img/switcher-spr.png) -15px -15px no-repeat; }
+  .switcher.multi.active {
+    background-position: -64px -15px; }
+
+.switcher.single {
+  float: right;
+  background: url(../img/switcher-spr.png) -113px -15px no-repeat; }
+  .switcher.single.active {
+    background-position: -162px -15px; }
+
+/* grid interval */
+.intervals {
+  position: absolute;
+  z-index: 99;
+  left: 0;
+  top: 0;
+  width: 103px;
+  height: 103px;
+  overflow: hidden; }
+
+.interval.hor {
+  background: #f97e76;
+  height: 100%;
+  width: 1px;
+  margin: 0 auto; }
+
+.interval.vert {
+  background: #f97e76;
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto; }
+
+/* = Opacity section
+================================================*/
+.wmark-opacity {
+  margin: 30px 0 14px; }
+
+.opacity-slider {
+  border-radius: 2px;
+  border: none;
+  height: 3px;
+  position: relative;
+  background-color: #dbe1e8; }
+
+.ui-slider-range {
+  position: absolute;
+  background-color: #9eb2c0;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  border-radius: 3px;
+  border: none; }
+
+.ui-slider-handle {
+  border: 7px solid #dbe1e8;
+  border-radius: 50%;
+  cursor: pointer;
+  position: absolute;
+  margin-left: -10px;
+  top: -10px;
+  z-index: 2;
+  background-color: #9eb2c0;
+  height: 22px;
+  width: 22px;
+  content: " ";
+  display: block;
+  box-shadow: 0 1px 2px #969698; }
+  .ui-slider-handle.ui-state-active {
+    background-color: #f97e76; }
+
+/* = Buttons section
+================================================*/
+.btn {
+  font: 18px/1 "robotolight";
+  color: #fff;
+  border: none;
+  background: #f97e76;
+  border-radius: 3px;
+  min-width: 99px;
+  padding: 12px 4px;
+  text-align: center;
+  display: inline-block; }
+  .btn:hover {
+    background: #f87067; }
+  .btn:active {
+    background: #f8675e; }
+  .btn.neg {
+    background: #c1cfd9; }
+    .btn.neg:hover {
+      background: #b8c8d3; }
+    .btn.neg:active {
+      background: #b1c3cf; }
+
+/* = Disable
+================================================*/
+.disabled-area {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99; }
+
+.disabled {
+  opacity: 0.6;
+  cursor: default; }
+
+/* = Fixes for old browsers
+================================================*/
+/* opacity */
+.no-opacity .input-file {
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"; }
+
+.no-opacity .disabled .fake-upload {
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)"; }
