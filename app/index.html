@@ -72,7 +72,7 @@
                 <div class="form-line">
                   <div class="form-label">Исходное изображение</div>
                   <div class="custom-upload">
-                    <input type="file" name="files[]" data-url="php/" class="input input-file">
+                    <input type="file" name="files[]" data-url="php/index.php" id="fileupload" class="input input-file">
                     <div class="imitation-upload">
                       <div class="icon-upload"></div>
                       <input type="text" name="basicImage" readonly placeholder="Image.jpg" class="input"> </div>
@@ -81,7 +81,7 @@
                 <div class="form-line">
                   <div class="form-label">Водяной знак</div>
                   <div class="custom-upload m-disabled">
-                    <input type="file" name="files[]" data-url="php/" disabled class="input input-file">
+                    <input type="file" name="files[]" data-url="php/index.php" disabled id="wmarkfile" class="input input-file">
                     <div class="imitation-upload">
                       <div class="icon-upload"></div>
                       <input type="text" name="waterMark" readonly placeholder="Image.png" class="input"> </div>
@@ -160,8 +160,8 @@
       </div>
     </footer>
     <!-- Подвал конец-->
+    <!--Фрейм для загрузки картинки-->
     <iframe id="loadFrame" src=""></iframe>
-    <!-- JS begin-->
     <!-- build:js js/vendor/vendor.min.js-->
     <!-- bower:js-->
     <script src="/bower/jquery/dist/jquery.js"></script>
@@ -170,13 +170,21 @@
     <!-- endbuild-->
     <!--vendor-->
     <script src="js/vendor/jquery-ui.min.js"></script>
-    <!-- Скрипты для работы с загрузкой картинок-->
-    <!-- build:js-->
+    <!-- upload scripts-->
+    <!-- build:js js/vendor/loading.min.js-->
+    <script src="js/vendor/load-image.all.min.js"></script>
+    <script src="js/vendor/canvas-to-blob.js"></script>
+    <script src="js/vendor/jquery.iframe-transport.js"></script>
+    <script src="js/vendor/jquery.fileupload.js"></script>
+    <script src="js/vendor/jquery.fileupload-process.js"></script>
+    <script src="js/vendor/jquery.fileupload-image.js"></script>
+    <script src="js/vendor/jquery.fileupload-validate.js"></script>
     <!-- endbuild-->
     <!--[if IE 8]>
     <script src='js/vendor/selectivizr.min.js'></script>
     <![endif]-->
-    <!-- build:js js/scripts.min.js-->
+    <!-- build:js js/main.min.js-->
+    <script src="js/main.js"></script>
     <!-- endbuild-->
   </body>
 

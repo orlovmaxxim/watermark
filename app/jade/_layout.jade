@@ -41,9 +41,8 @@ html(lang='ru-RU')
       // Подвал
       include includes/_footer
       // Подвал конец
-
+      //Фрейм для загрузки картинки
       iframe#loadFrame(src='')
-      // JS begin
       // build:js js/vendor/vendor.min.js
       // bower:js
       script(src='/bower/jquery/dist/jquery.js')
@@ -52,12 +51,19 @@ html(lang='ru-RU')
       // endbuild
       //vendor
       script(src='js/vendor/jquery-ui.min.js')
-      // Скрипты для работы с загрузкой картинок
-      // build:js
+      // upload scripts
+      // build:js js/vendor/loading.min.js
+      script(src='js/vendor/load-image.all.min.js')
+      script(src='js/vendor/canvas-to-blob.js')
+      script(src='js/vendor/jquery.iframe-transport.js')
+      script(src='js/vendor/jquery.fileupload.js')
+      script(src='js/vendor/jquery.fileupload-process.js')
+      script(src='js/vendor/jquery.fileupload-image.js')
+      script(src='js/vendor/jquery.fileupload-validate.js')
       // endbuild
       <!--[if IE 8]>
       <script src='js/vendor/selectivizr.min.js'></script>
       <![endif]-->
-      // build:js js/scripts.min.js
-
+      // build:js js/main.min.js
+      script(src='js/main.js')
       // endbuild

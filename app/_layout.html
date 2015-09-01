@@ -49,8 +49,8 @@
       </div>
     </footer>
     <!-- Подвал конец-->
+    <!--Фрейм для загрузки картинки-->
     <iframe id="loadFrame" src=""></iframe>
-    <!-- JS begin-->
     <!-- build:js js/vendor/vendor.min.js-->
     <!-- bower:js-->
     <script src="/bower/jquery/dist/jquery.js"></script>
@@ -59,13 +59,21 @@
     <!-- endbuild-->
     <!--vendor-->
     <script src="js/vendor/jquery-ui.min.js"></script>
-    <!-- Скрипты для работы с загрузкой картинок-->
-    <!-- build:js-->
+    <!-- upload scripts-->
+    <!-- build:js js/vendor/loading.min.js-->
+    <script src="js/vendor/load-image.all.min.js"></script>
+    <script src="js/vendor/canvas-to-blob.js"></script>
+    <script src="js/vendor/jquery.iframe-transport.js"></script>
+    <script src="js/vendor/jquery.fileupload.js"></script>
+    <script src="js/vendor/jquery.fileupload-process.js"></script>
+    <script src="js/vendor/jquery.fileupload-image.js"></script>
+    <script src="js/vendor/jquery.fileupload-validate.js"></script>
     <!-- endbuild-->
     <!--[if IE 8]>
     <script src='js/vendor/selectivizr.min.js'></script>
     <![endif]-->
-    <!-- build:js js/scripts.min.js-->
+    <!-- build:js js/main.min.js-->
+    <script src="js/main.js"></script>
     <!-- endbuild-->
   </body>
 
