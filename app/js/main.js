@@ -7,13 +7,13 @@ var formImg;
 
 dragAndDrop = (function(){
 
-    // set variables
+    // Устанавливаем переменные
     var xpos = $('.controls input[name="xpos"]'),
         ypos = $('.controls input[name="ypos"]'),
         imgWrap = $('.main-image-wrapper'),
         wmarkWrap = $('.main-wmark-wrapper');
 
-    // append watermark to working area
+    // Добавление водяного знака на базовое изображение
     var appendDraggableEl = function(url){
             var appendEl = $('<img class="watermark" src="' + url + '">');
 
@@ -26,7 +26,7 @@ dragAndDrop = (function(){
             });
         },
 
-    // check the drag mode
+    // Проверяем режим перетаскивания
         _checkContainment = function () {
             var img = $('#image'),
                 wmark = $('.watermark');
@@ -40,7 +40,7 @@ dragAndDrop = (function(){
             }
         },
 
-    // if watermark less than the image - use containment settings
+    // Если водяной знак меньше изображения
         _dragContainment = function () {
             wmarkWrap.draggable({
                 containment: '#image',
@@ -53,7 +53,7 @@ dragAndDrop = (function(){
             });
         },
 
-    // if watermark bigger than the image - use uncontainment settings
+    // Если водяной знак больше изображния
         _dragUnContainment = function (mode) {
             wmarkWrap.draggable({
                 drag: function(ev, ui){
@@ -100,7 +100,7 @@ dragAndDrop = (function(){
             });
         },
 
-    // toggle multi or single mode
+    // Переключение ржимов отображения
         toggleMode = function(mode){
             _dragDestroy();
 
