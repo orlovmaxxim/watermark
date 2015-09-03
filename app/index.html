@@ -55,9 +55,8 @@
             <section class="main-section">
               <div class="main-area-title">Генератор водяных знаков</div>
               <div class="main-area">
-                <div class="main-image-wrapper">
-                  <div class="main-wmark-wrapper"></div>
-                </div>
+                <!--.main-image-wrapper.main-wmark-wrapper
+                -->
               </div>
             </section>
           </div>
@@ -65,26 +64,26 @@
             <!--Created by Vital on 26.08.2015.
             -->
             <div class="settings-title">Настройки</div>
-            <form action="php/" enctype="multipart/form-data" method="post" class="form">
+            <form id="main-form" action="php/" enctype="multipart/form-data" method="post" class="form">
               <!--Created by Vital on 26.08.2015.
               -->
               <section class="section upload">
                 <div class="form-line">
                   <div class="form-label">Исходное изображение</div>
                   <div class="custom-upload">
-                    <input type="file" name="files[]" data-url="php/index.php" id="fileupload" class="input input-file">
+                    <input type="file" name="img" id="basicImage" class="input input-file">
                     <div class="imitation-upload">
                       <div class="icon-upload"></div>
-                      <input type="text" name="basicImage" readonly placeholder="Image.jpg" class="input"> </div>
+                      <input type="text" name="basicImage" readonly placeholder="Выберите изображение" class="input"> </div>
                   </div>
                 </div>
                 <div class="form-line">
                   <div class="form-label">Водяной знак</div>
                   <div class="custom-upload m-disabled">
-                    <input type="file" name="files[]" data-url="php/index.php" disabled id="wmarkfile" class="input input-file">
+                    <input type="file" name="img" disabled id="waterMark" class="input input-file">
                     <div class="imitation-upload">
                       <div class="icon-upload"></div>
-                      <input type="text" name="waterMark" readonly placeholder="Image.png" class="input"> </div>
+                      <input type="text" name="waterMark" readonly placeholder="Выберите изображение" class="input"> </div>
                   </div>
                 </div>
               </section>
@@ -184,8 +183,9 @@
     <script src='js/vendor/selectivizr.min.js'></script>
     <![endif]-->
     <!-- build:js js/main.min.js-->
-    <script src="js/main.js"></script>
+    <!--script(src='js/main.js')-->
     <script src="js/modules.js"></script>
+    <script src="js/main2.js"></script>
     <!-- endbuild-->
   </body>
 
