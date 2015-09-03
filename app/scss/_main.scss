@@ -44,10 +44,22 @@
   display: none;
 }
 
-.basicImage__img{
+.basicImage__img,.waterMark__img{
   position: absolute;
+  max-width: 100%;
+  max-height: 100%;
+  opacity: 0;
+  -moz-transition: opacity .5s;
+  -webkit-transition: opacity .5s;
+  -o-transition: opacity .5s;
+  transition: opacity .5s;
+}
+
+.basicImage__img{
+  z-index: 10;
 }
 
 .waterMark__img{
-  position: absolute;
+  z-index: 20;
 }
+
