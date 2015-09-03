@@ -1,9 +1,3 @@
-"use strict";
-
-$(function(){
-	upload.init();
-}());
-
 $.fn.tooltip = function(options){
 
 	options = {

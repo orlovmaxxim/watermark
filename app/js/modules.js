@@ -3,15 +3,16 @@
 var upload = (function(){
 
 	var 
-		_isBasicImageLarge = false;
+		_isBasicImageLarge = false,
+		MAX_FILE_SIZE = 5000000;
 
 	function initialization(){
 		_setupEventListeners();
 	}
 
 	function _setupEventListeners(){
-		$('#basicImage').on('change', _basicImageChangeHandler);
 
+		$('#basicImage').on('change', _basicImageChangeHandler);
 		$('#waterMark').on('change', _waterMarkChangeHandler);
 
 	}
@@ -20,10 +21,15 @@ var upload = (function(){
 	function _basicImageChangeHandler(e){
 		var 
 			$this = $(this),
-			img = $this[0].files[0];
-		
+			img = $this[0].files[0],
+			waterMark = $('.waterMark__img');
 		//if img not undefind read it from local machine
 		if(img){
+			if(waterMark.length){
+				//TODO: change to wm clear function
+				waterMark.remove();
+			}
+			//call file reader with event target scope
 			_readFile.call(this, img, _basicImageLoadCallback);
 		}
 		
@@ -39,15 +45,18 @@ var upload = (function(){
 			waterMark = $this.closest('.upload').find('#waterMark'),
 			basicImage = $('.basicImage__img');
 
+		//remove image if already exist
 		if(basicImage.length){
 			basicImage.remove();
 			_isBasicImageLarge = false;
-		} 
+		}
+		//create new image 
 		basicImage = imgContainer.append(imgMarkup).find('.basicImage__img').attr('src', e.target.result);
 		waterMark.prop('disabled',false);
 
 		$this.siblings('.imitation-upload').find('input').val(img.name);
 
+		//position image and show after load
 		basicImage.on('load', function(e){
 			var 
 				$this = $(this),
@@ -92,6 +101,7 @@ var upload = (function(){
 			img = $this[0].files[0];
 		//if img not undefind read it from local machine
 		if(img){
+			//call file reader with event target scope
 			_readFile.call(this, img, _waterMarkLoadCallback);
 		}
 		
@@ -107,19 +117,22 @@ var upload = (function(){
 			imgMarkup = '<img src="" class="waterMark__img" />',
 			waterMark = $('.waterMark__img');
 
+		//remove image if already exist
 		if(waterMark.length){
 			waterMark.remove();
-		} 
+		}
+
+		//append new image
 		waterMark = imgContainer.append(imgMarkup).find('.waterMark__img').attr('src', e.target.result);
 		disabledArea.css('display', 'none');
-	
 		$this.siblings('.imitation-upload').find('input').val(img.name);
 
 
-
+		//caculate image sizes, position and show after load
 		waterMark.on('load', function(e){
 			var 
 				$this = $(this),
+				input = $('#waterMark').closest('.custom-upload'),
 				imgContainer = $('.main-area'),
 				basicImage = $('.basicImage__img'),
 				basicImageNaturalWidth = basicImage.prop('naturalWidth'),
@@ -138,6 +151,7 @@ var upload = (function(){
 			if(imgNaturalWidth > basicImageNaturalWidth || imgNaturalHeight > basicImageNaturalHeight){
 				$this.remove();
 				console.log('tooltip: image is to big');
+				input.tooltip({'position': 'top', 'content': 'Водяной знак больше исходного изображения!'});
 			} else {
 
 				if( _isBasicImageLarge ){
@@ -182,13 +196,14 @@ var upload = (function(){
 
 
 		$(reader).on('loadstart', function(e){
-			if(e.originalEvent.total > 5000000){
+			if(e.originalEvent.total > MAX_FILE_SIZE){
 				this.abort();
 			}
 		});
 
 		$(reader).on('abort', $.proxy(function(){
 			console.log('tooltip: image size is to big');
+			$(this).tooltip({'position': 'top', 'content': 'Размер файла больше 2 МБ!'});
 		},this));
 
 		//show progressbar
@@ -212,3 +227,4 @@ var upload = (function(){
 	}
 
 }());
+
