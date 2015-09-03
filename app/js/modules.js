@@ -1,5 +1,6 @@
 "use strict";
 
+//-------image upload module--------//
 var imgUpload = (function(){
 
 	var 
@@ -225,6 +226,23 @@ var imgUpload = (function(){
 		
 	}
 
+
+	return {
+		init: initialization
+	}
+
+}());
+
+//---------create watermark module----------//
+var createWatermark = (function(){
+
+	function initialization(){
+		_setupEventListeners();
+	}
+
+	function _setupEventListeners(){
+		console.log('okoko');
+	}
 
 	return {
 		init: initialization

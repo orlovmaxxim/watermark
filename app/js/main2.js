@@ -2,5 +2,6 @@
 
 $(function(){
 	imgUpload.init();
+	createWatermark.init();
 }());
 
