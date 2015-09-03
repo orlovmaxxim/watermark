@@ -1,10 +1,10 @@
 "use strict";
 
-var upload = (function(){
+var imgUpload = (function(){
 
 	var 
 		_isBasicImageLarge = false,
-		MAX_FILE_SIZE = 5000000;
+		MAX_FILE_SIZE = 2000000; //2 MB
 
 	function initialization(){
 		_setupEventListeners();
@@ -194,11 +194,11 @@ var upload = (function(){
 		//manipulation image after load
 		$(reader).on('load', $.proxy(callback,this));
 
-
 		$(reader).on('loadstart', function(e){
 			if(e.originalEvent.total > MAX_FILE_SIZE){
 				this.abort();
 			}
+
 		});
 
 		$(reader).on('abort', $.proxy(function(){
@@ -217,8 +217,12 @@ var upload = (function(){
 				console.log('progress: '+progress);
 			}
 		});
-
-		reader.readAsDataURL(file);
+		if(file.type.match('image\/(png|jpe?g)')){
+			reader.readAsDataURL(file);
+		} else {
+			$(this).closest('.custom-upload').tooltip({'position': 'top', 'content': 'Только картинки PNG и JPEG!'});
+		}
+		
 	}
 
 
