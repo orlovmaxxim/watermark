@@ -5,7 +5,7 @@ var imgUpload = (function(){
 
 	var 
 		_isBasicImageLarge = false,
-		MAX_FILE_SIZE = 2000000; //2 MB
+		MAX_FILE_SIZE = 5000000; // this/1000000 MB
 
 	function initialization(){
 		_setupEventListeners();
@@ -241,7 +241,23 @@ var createWatermark = (function(){
 	}
 
 	function _setupEventListeners(){
-		console.log('okoko');
+		$('#main-form').on('submit', _submitForm);
+	}
+
+	function _submitForm(e){
+		e.preventDefault();
+
+		$.ajax({
+			url: './php/create.php',
+			data: new FormData(this),
+			contentType: false,
+			processData: false,
+			type: 'POST',
+		}).done(function(data){
+				console.log(data.name);
+				$('#loadFrame').attr('src', './php/download.php?name='+data.name);
+			});
+
 	}
 
 	return {
