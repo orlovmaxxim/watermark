@@ -5,7 +5,9 @@ var imgUpload = (function(){
 
 	var 
 		_isBasicImageLarge = false,
-		MAX_FILE_SIZE = 5000000; // this/1000000 MB
+		MAX_FILE_SIZE = 5000000, // this/1000000 MB
+		MAX_UNCOMPRESSED_FILE_SIZE = 33177600;//4k color image 3640x2160
+
 
 	function initialization(){
 		_setupEventListeners();
@@ -53,21 +55,27 @@ var imgUpload = (function(){
 		}
 		//create new image 
 		basicImage = imgContainer.append(imgMarkup).find('.basicImage__img').attr('src', e.target.result);
-		waterMark.prop('disabled',false);
-
-		$this.siblings('.imitation-upload').find('input').val(img.name);
+		
 
 		//position image and show after load
 		basicImage.on('load', function(e){
 			var 
 				$this = $(this),
 				imgContainer = $('.main-area'),
+				input = $('#basicImage').closest('.custom-upload'),
 				imgNaturalWidth = $this.prop('naturalWidth'),
 				imgNaturalHeight = $this.prop('naturalHeight'),
 				imgWidth = $this.width(),
 				imgHeight = $this.height(),
 				imgContainerWidth = imgContainer.width(),
 				imgContainerHeight = imgContainer.height();
+
+			if((imgNaturalWidth * imgNaturalHeight * 4) > MAX_UNCOMPRESSED_FILE_SIZE){
+
+				_clearInput(input);
+				input.tooltip({'position': 'top', 'content': 'Разрешение изображения больше 4К!'});
+				return;
+			}
 
 			if(imgNaturalWidth > imgContainerWidth || imgNaturalHeight > imgContainerHeight){
 
@@ -93,6 +101,12 @@ var imgUpload = (function(){
 			$this.css('opacity', 1);
 
 		});
+
+
+			waterMark.prop('disabled',false);
+
+			$this.siblings('.imitation-upload').find('input').val(img.name);
+
 	}
 
 	//waterMark onchage handler
@@ -149,9 +163,17 @@ var imgUpload = (function(){
 				relImgHeight = 0,
 				relIndex = imgNaturalWidth / imgNaturalHeight;
 
+			if((imgNaturalWidth * imgNaturalHeight * 4) > MAX_UNCOMPRESSED_FILE_SIZE){
+
+				_clearInput(input);
+				input.tooltip({'position': 'top', 'content': 'Разрешение изображения больше 4К!'});
+				return;
+			}
+
 			if(imgNaturalWidth > basicImageNaturalWidth || imgNaturalHeight > basicImageNaturalHeight){
 				$this.remove();
 				console.log('tooltip: image is to big');
+				_clearInput(input);
 				input.tooltip({'position': 'top', 'content': 'Водяной знак больше исходного изображения!'});
 			} else {
 
@@ -218,12 +240,19 @@ var imgUpload = (function(){
 				console.log('progress: '+progress);
 			}
 		});
+
 		if(file.type.match('image\/(png|jpe?g)')){
 			reader.readAsDataURL(file);
 		} else {
 			$(this).closest('.custom-upload').tooltip({'position': 'top', 'content': 'Только картинки PNG и JPEG!'});
 		}
 		
+	}
+
+	function _clearInput(input){
+		var
+			inputField = input.find('input[type=text]');
+		inputField.val('');
 	}
 
 
@@ -236,6 +265,9 @@ var imgUpload = (function(){
 //---------create watermark module----------//
 var createWatermark = (function(){
 
+	var
+		_submitFlag = true;
+
 	function initialization(){
 		_setupEventListeners();
 	}
@@ -247,16 +279,38 @@ var createWatermark = (function(){
 	function _submitForm(e){
 		e.preventDefault();
 
-		$.ajax({
+		var
+			$this = $(this),
+			submitBtn = $this.find('input[type=submit]');
+
+		if(_submitFlag){
+
+			_submitFlag = false;
+			submitBtn.val('Подождите...');
+
+			$.ajax({
 			url: './php/create.php',
 			data: new FormData(this),
 			contentType: false,
 			processData: false,
 			type: 'POST',
-		}).done(function(data){
+			}).done(function(data){
+
 				console.log(data.name);
 				$('#loadFrame').attr('src', './php/download.php?name='+data.name);
+
+			}).fail(function(jqXHR){
+
+				console.log($.parseJSON(jqXHR.responseText).msg);
+
+			}).always(function(){
+
+				_submitFlag = true;
+				submitBtn.val('Скачать');
+
 			});
+		}
+		
 
 	}
 
