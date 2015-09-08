@@ -369,14 +369,50 @@ var singleModule = (function(){
 
 	// вводим значение в инпут поле X
 	var _writeNumberInputX = function () {
+		//сброс подсветки с сетки
+		$('.grid-item').removeClass('active');
 
+		var $this = $(this),
+				wmarkWrap = $('.waterMark__img'),
+				imgWrap = $('.basicImage__img'),
+				wmarkWidth = wmarkWrap.outerWidth(),
+				imgWidth = imgWrap.outerWidth();
+
+		//вызываем функция ввода только чисел
+		onlyInteger($this);
+
+		//проверка на максимально допустимое значение
+		if($this.val() > (imgWidth - wmarkWidth)) {
+			$this.val(imgWidth - wmarkWidth);
+		}
+		$('.waterMark__img').css({
+			'left' : $this.val() + 'px'
+		})
 	};
 
 	// вводим значение в инпут поле Y
 	var _writeNumberInputY = function () {
+		//сброс подсветки с сетки
+		$('.grid-item').removeClass('active');
 
+		var $this = $(this),
+				wmarkWrap = $('.waterMark__img'),
+				imgWrap = $('.basicImage__img'),
+				wmarkHeight = wmarkWrap.outerHeight(),
+				imgHeight = imgWrap.outerHeight();
+
+		//вызываем функция ввода только чисел
+		onlyInteger($this);
+
+		//проверка на максимально допустимое значение
+		if($this.val() > (imgHeight - wmarkHeight)) {
+			$this.val(imgHeight - wmarkHeight);
+		}
+		$('.waterMark__img').css({
+			'top' : $this.val() + 'px'
+		})
 	};
-
+	
 	return {
 		init: initial
 	};
