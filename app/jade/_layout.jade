@@ -14,13 +14,13 @@ html(lang='ru-RU')
          title Генератор водяных знаков
       // build:css css/vendor.min.css
       // bower:css
-      link(rel='stylesheet', href='/bower/normalize.css/normalize.css')
+      link(rel='stylesheet', href='./bower/normalize.css/normalize.css')
       // endbower
       // endbuild
       // build:css css/styles.min.css
       link(rel='stylesheet', href='css/styles.css')
       // endbuild
-      script(src='js/vendor/modernizr.min.js')
+      script(src='./js/vendor/modernizr.min.js')
    body
       <!--[if lt IE 8]>
       <p class='b-unhappy-browser'>Вы используете устаревший браузер. Пожалуйста
@@ -45,8 +45,8 @@ html(lang='ru-RU')
       iframe#loadFrame(src='')
       // build:js js/vendor/vendor.min.js
       // bower:js
-      script(src='/bower/jquery/jquery.js')
-      script(src='/bower/jquery-placeholder/jquery.placeholder.js')
+      script(src='./bower/jquery/jquery.js')
+      script(src='./bower/jquery-placeholder/jquery.placeholder.js')
       // endbower
       // endbuild
       //vendor
@@ -65,6 +65,8 @@ html(lang='ru-RU')
       <script src='js/vendor/selectivizr.min.js'></script>
       <![endif]-->
       // build:js js/main.min.js
-      script(src='js/main.js')
+      //script(src='js/main.js')
+      script(src='js/tooltip.js')
       script(src='js/modules.js')
+      script(src='js/main2.js')
       // endbuild

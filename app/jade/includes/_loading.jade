@@ -4,16 +4,16 @@ section.section.upload
    .form-line
       .form-label Исходное изображение
       .custom-upload
-         input.input.input-file(type="file", name='files[]', data-url='php/index.php')#fileupload
+         input.input.input-file(type="file", name='bimg')#basicImage
          .imitation-upload
             .icon-upload
-            input.input(type='text', name='basicImage', 'readonly', placeholder='Image.jpg')
+            input.input(type='text', name='basicImage', 'readonly', placeholder='Выберите изображение')
 
    .form-line
       .form-label Водяной знак
       .custom-upload.m-disabled
-         input.input.input-file(type="file", name='files[]', data-url='php/index.php', disabled)#wmarkfile
+         input.input.input-file(type="file", name='wimg', disabled)#waterMark
          .imitation-upload
             .icon-upload
-            input.input(type='text', name='waterMark', 'readonly', placeholder='Image.png')
+            input.input(type='text', name='waterMark', 'readonly', placeholder='Выберите изображение')
 
