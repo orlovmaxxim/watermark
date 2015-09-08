@@ -250,3 +250,135 @@ var createWatermark = (function(){
 
 }());
 
+//---------create position module----------//
+
+var positionModule = (function(){
+
+	var initial = function () {
+		_setUpListeners();
+	};
+
+	var _setUpListeners = function () {
+		$('.switcher.multi').on('click', _multiTypeActive);
+		$('.switcher.single').on('click', _singleTypeActive);
+	}
+
+	// Активируем мульти-режим
+	var _multiTypeActive = function() {
+		$('.switchers').children('.switcher.single').removeClass('active');
+		$('.switchers').children('.switcher.multi').addClass('active');
+		console.log("Multi active");
+	}
+
+	// Активируем одиночный режим
+	var _singleTypeActive = function() {
+		$('.switchers').children('.switcher.multi').removeClass('active');
+		$('.switchers').children('.switcher.single').addClass('active');
+		console.log("Single active");
+		singleModule.init();
+		drag();
+		/*return false;*/
+	}
+
+	return {
+		init: initial
+	};
+
+})();
+
+//---------create single module----------//
+
+var singleModule = (function(){
+
+	var initial = function () {
+		_setUpListeners();
+	};
+
+	var _setUpListeners = function () {
+		$('[name = xpos]').on('keyup change', _writeNumberInputX);
+		$('[name = ypos]').on('keyup change', _writeNumberInputY);
+		$('.grid-item').on('click', _squarePosActive);
+	}
+
+	// позиционируем ватермарк через сетку
+	var _squarePosActive = function() {
+		var $this = $(this),
+				square = $this.data('pos'),
+				wmarkWrap = $('.waterMark__img'),
+				imgWrap = $('.basicImage__img'),
+				minPosX = 0,
+        minPosY = 0,
+        midPosX = (imgWrap.outerWidth() - wmarkWrap.outerWidth()) / 2,
+        midPosY = (imgWrap.outerHeight() - wmarkWrap.outerHeight()) / 2,
+        maxPosX = imgWrap.outerWidth() - wmarkWrap.outerWidth(),
+        maxPosY = imgWrap.outerHeight() - wmarkWrap.outerHeight();
+
+		//подсветка квадратика
+		$('.grid-item').removeClass('active');
+		$this.addClass('active');
+
+		//клик - выбор квадратика
+		switch (square) {
+    	case 'top-left':
+    	    wmarkWrap.css({'left':Math.round(minPosX),'top':Math.round(minPosY)});
+    	    $('[name = xpos]').val(parseInt(minPosX,10));
+					$('[name = ypos]').val(parseInt(minPosY,10));
+    	    break;
+    	case 'top-center':
+    	    wmarkWrap.css({'left':Math.round(midPosX),'top':Math.round(minPosY)});
+    	    $('[name = xpos]').val(parseInt(midPosX,10));
+					$('[name = ypos]').val(parseInt(minPosY,10));
+    	    break;
+    	case 'top-right':
+    	    wmarkWrap.css({'left':Math.round(maxPosX),'top':Math.round(minPosY)});
+    	    $('[name = xpos]').val(parseInt(maxPosX,10));
+					$('[name = ypos]').val(parseInt(minPosY,10));
+    	    break;
+    	case 'mid-left':
+    	    wmarkWrap.css({'left':Math.round(minPosX),'top':Math.round(midPosY)});
+    	    $('[name = xpos]').val(parseInt(minPosX,10));
+					$('[name = ypos]').val(parseInt(midPosY,10));
+    	    break;
+    	case 'mid-center':
+    	    wmarkWrap.css({'left':Math.round(midPosX),'top':Math.round(midPosY)});
+    	    $('[name = xpos]').val(parseInt(midPosX,10));
+					$('[name = ypos]').val(parseInt(midPosY,10));
+    	    break;
+    	case 'mid-right':
+    	    wmarkWrap.css({'left':Math.round(maxPosX),'top':Math.round(midPosY)});
+    	    $('[name = xpos]').val(parseInt(maxPosX,10));
+					$('[name = ypos]').val(parseInt(midPosY,10));
+    	    break;
+    	case 'btm-left':
+    	    wmarkWrap.css({'left':Math.round(minPosX),'top':Math.round(maxPosY)});
+    	    $('[name = xpos]').val(parseInt(minPosX,10));
+					$('[name = ypos]').val(parseInt(maxPosY,10));
+    	    break;
+    	case 'btm-center':
+    	    wmarkWrap.css({'left':Math.round(midPosX),'top':Math.round(maxPosY)});
+    	    $('[name = xpos]').val(parseInt(midPosX,10));
+					$('[name = ypos]').val(parseInt(maxPosY,10));
+    	    break;
+    	case 'btm-right':
+    	    wmarkWrap.css({'left':Math.round(maxPosX),'top':Math.round(maxPosY)});
+    	    $('[name = xpos]').val(parseInt(maxPosX,10));
+					$('[name = ypos]').val(parseInt(maxPosY,10));
+    	    break;
+     }
+	};
+
+	// вводим значение в инпут поле X
+	var _writeNumberInputX = function () {
+
+	};
+
+	// вводим значение в инпут поле Y
+	var _writeNumberInputY = function () {
+
+	};
+
+	return {
+		init: initial
+	};
+
+})();

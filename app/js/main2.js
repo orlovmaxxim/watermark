@@ -3,5 +3,6 @@
 $(function(){
 	imgUpload.init();
 	createWatermark.init();
+	positionModule.init();
 }());
 
