@@ -268,6 +268,8 @@ var positionModule = (function(){
 		$('.switchers').children('.switcher.single').removeClass('active');
 		$('.switchers').children('.switcher.multi').addClass('active');
 		console.log("Multi active");
+		multiModule.init();
+		drag();
 	}
 
 	// Активируем одиночный режим
@@ -298,6 +300,7 @@ var singleModule = (function(){
 		$('[name = xpos]').on('keyup change', _writeNumberInputX);
 		$('[name = ypos]').on('keyup change', _writeNumberInputY);
 		$('.grid-item').on('click', _squarePosActive);
+		$('.control-arrow').on('click', _arrowsPosExchange);
 	}
 
 	// позиционируем ватермарк через сетку
@@ -412,7 +415,32 @@ var singleModule = (function(){
 			'top' : $this.val() + 'px'
 		})
 	};
+
+	//меняем координаты стрелками
+	var _arrowsPosExchange = function(e) {
+		e.preventDefault();
+
+		var $this = $(this),
+				minStepConst = 10;
+
+	};
 	
+	return {
+		init: initial
+	};
+
+})();
+
+var multiModule = (function(){
+
+	var initial = function () {
+		_setUpListeners();
+	};
+
+	var _setUpListeners = function () {
+		
+	}
+
 	return {
 		init: initial
 	};
