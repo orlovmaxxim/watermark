@@ -1,3 +1,5 @@
+<?php require_once ('./php/locale.php') ?>
+
 <!--Created by Vital on 26.08.2015.
 -->
 <!DOCTYPE html>
@@ -188,6 +190,7 @@
     <script src="js/modules.js"></script>
     <script src="js/main2.js"></script>
     <script src="js/drag.js"></script>
+    <script src="js/onlyInteger.js"></script>
     <!-- endbuild-->
   </body>
 

@@ -6,6 +6,9 @@ require __DIR__.'/../vendor/autoload.php';
 
 use PHPImageWorkshop\ImageWorkshop;
 
+define("IMG_CONTAINER_WIDTH", 650);
+define("IMG_CONTAINER_HEIGHT", 534);
+
 function generateRandomName($extension = '') {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);
@@ -17,6 +20,22 @@ function generateRandomName($extension = '') {
     return $randomName.$extension;
 }
 
+function response($status, $message){
+	$statusMsg = '';
+
+	if($status == 200){
+		header("HTTP/1.1 200 OK");
+	}
+
+	if($status == 400){
+		header("HTTP/1.1 400 Bad request");
+	}
+
+	header('Content-type: json');
+	echo '{"status": "error", "msg":"Image is to big"}';
+	exit;
+}
+
 if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) && !empty( $_POST ))
 	{
 
@@ -24,8 +43,10 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 
 
 			$basicImageLayer = ImageWorkshop::initFromPath($_FILES['bimg']['tmp_name']);
+
 			$basicImageLayerWidth = $basicImageLayer->getWidth();
 			$basicImageLayerHeight = $basicImageLayer->getHeight();
+
 			$imageSize = $basicImageLayerWidth*$basicImageLayerHeight*4;
 
 			if($imageSize > 33177600){
@@ -37,7 +58,30 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 
 			$waterMarkLayer = ImageWorkshop::initFromPath($_FILES['wimg']['tmp_name']);
 			$waterMarkLayer->opacity($_POST['opacity']);
-			$basicImageLayer->addLayer(1, $waterMarkLayer, $_POST['xpos'], $_POST['ypos'], "LU");
+			$waterMarkLayerXpos = $_POST['xpos'];
+			$waterMarkLayerYpos =  $_POST['ypos'];
+
+			
+			if($basicImageLayerWidth > IMG_CONTAINER_WIDTH || $basicImageLayerHeight > IMG_CONTAINER_HEIGHT){
+
+				$relIndex = $basicImageLayerWidth / $basicImageLayerHeight;
+
+				if( $basicImageLayerWidth > $basicImageLayerHeight ){
+
+						$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerWidth) / IMG_CONTAINER_WIDTH);
+						$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerWidth / $relIndex) / IMG_CONTAINER_HEIGHT);
+
+					} else if ( $basicImageLayerHeight  > $basicImageLayerWidth ){
+
+						$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerHeight) / IMG_CONTAINER_HEIGHT);
+						$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerHeight * $relIndex) / IMG_CONTAINER_WIDTH);
+					}
+
+			}
+
+			
+
+			$basicImageLayer->addLayer(1, $waterMarkLayer, $waterMarkLayerXpos, $waterMarkLayerYpos, "LT");
  			$image = $basicImageLayer->getResult();
 
  			$tempName = generateRandomName('.jpg');
