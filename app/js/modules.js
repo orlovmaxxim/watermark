@@ -1,5 +1,29 @@
 "use strict";
 
+//-----localisation-----//
+var lang = (function () {
+		var 
+			ru = {
+				'err_4k': 'Разрешение изображения больше 4К!',
+				'err_mb': 'Размер файла больше 5 МБ!',
+				'err_frmt' :'Только картинки PNG и JPEG!',
+				'err_wm_sz' :'Водяной знак больше исходного изображения!'
+			},
+			en = {
+				'err_4k': 'Image resolution bigger than 4K!',
+				'err_mb': 'File size bigger than 5 MB!',
+				'err_frmt' :'Only PNG and JPEG images!',
+				'err_wm_sz' :'Watermark size bigger than basic image!'
+			};
+		
+		if(window.location.search === "?lang=en"){
+			return en;
+		} else if(window.location.search === "?lang=ru"){
+			return ru;
+		}
+				
+}());
+
 //-------image upload module--------//
 var imgUpload = (function(){
 
@@ -73,7 +97,8 @@ var imgUpload = (function(){
 			if((imgNaturalWidth * imgNaturalHeight * 4) > MAX_UNCOMPRESSED_FILE_SIZE){
 
 				_clearInput(input);
-				input.tooltip({'position': 'top', 'content': 'Разрешение изображения больше 4К!'});
+				//input.tooltip({'position': 'top', 'content': 'Разрешение изображения больше 4К!'});
+				input.tooltip({'position': 'top', 'content': lang.err_4k});
 				return;
 			}
 
@@ -166,7 +191,8 @@ var imgUpload = (function(){
 			if((imgNaturalWidth * imgNaturalHeight * 4) > MAX_UNCOMPRESSED_FILE_SIZE){
 
 				_clearInput(input);
-				input.tooltip({'position': 'top', 'content': 'Разрешение изображения больше 4К!'});
+				//input.tooltip({'position': 'top', 'content': 'Разрешение изображения больше 4К!'});
+				input.tooltip({'position': 'top', 'content': lang.err_4k});
 				return;
 			}
 
@@ -174,7 +200,8 @@ var imgUpload = (function(){
 				$this.remove();
 				console.log('tooltip: image is to big');
 				_clearInput(input);
-				input.tooltip({'position': 'top', 'content': 'Водяной знак больше исходного изображения!'});
+				//input.tooltip({'position': 'top', 'content': 'Водяной знак больше исходного изображения!'});
+				input.tooltip({'position': 'top', 'content': lang.err_wm_sz});
 			} else {
 
 				if( _isBasicImageLarge ){
@@ -226,7 +253,8 @@ var imgUpload = (function(){
 
 		$(reader).on('abort', $.proxy(function(){
 			console.log('tooltip: image size is to big');
-			$(this).tooltip({'position': 'top', 'content': 'Размер файла больше 2 МБ!'});
+			//$(this).tooltip({'position': 'top', 'content': 'Размер файла больше 2 МБ!'});
+			$(this).tooltip({'position': 'top', 'content': lang.err_mb});
 		},this));
 
 		//show progressbar
@@ -244,7 +272,8 @@ var imgUpload = (function(){
 		if(file.type.match('image\/(png|jpe?g)')){
 			reader.readAsDataURL(file);
 		} else {
-			$(this).closest('.custom-upload').tooltip({'position': 'top', 'content': 'Только картинки PNG и JPEG!'});
+			//$(this).closest('.custom-upload').tooltip({'position': 'top', 'content': 'Только картинки PNG и JPEG!'});
+			$(this).closest('.custom-upload').tooltip({'position': 'top', 'content': lang.err_frmt});
 		}
 		
 	}

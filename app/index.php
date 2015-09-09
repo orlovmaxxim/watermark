@@ -13,7 +13,7 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <title>Генератор водяных знаков</title>
+    <title><?php echo $lang["wm_gn"]; ?></title>
     <!-- build:css css/vendor.min.css-->
     <!-- bower:css-->
     <link rel="stylesheet" href="./bower/normalize.css/normalize.css">
@@ -38,8 +38,8 @@
           <!--Created by Vital on 26.08.2015.
           -->
           <ul class="language">
-            <li class="language-item"><a class="language-link active">РУС</a></li>
-            <li class="language-item"><a class="language-link">ENG</a></li>
+            <li class="language-item"><a class="language-link active" href="?lang=ru">РУС</a></li>
+            <li class="language-item"><a class="language-link" href="?lang=en">ENG</a></li>
           </ul>
           <div class="share">
             <div class="share-icon"><a href="#" class="share-icon-link">Like Me</a></div>
@@ -55,7 +55,7 @@
             <!--Created by Vital on 26.08.2015.
             -->
             <section class="main-section">
-              <div class="main-area-title">Генератор водяных знаков</div>
+              <div class="main-area-title"><?php echo $lang['wm_gn']; ?></div>
               <div class="main-area">
                 <!--.main-image-wrapper.main-wmark-wrapper
                 -->
@@ -65,27 +65,27 @@
           <div class="settings">
             <!--Created by Vital on 26.08.2015.
             -->
-            <div class="settings-title">Настройки</div>
+            <div class="settings-title"><?php echo $lang['opt']; ?></div>
             <form id="main-form" action="php/" enctype="multipart/form-data" method="post" class="form">
               <!--Created by Vital on 26.08.2015.
               -->
               <section class="section upload">
                 <div class="form-line">
-                  <div class="form-label">Исходное изображение</div>
+                  <div class="form-label"><?php echo $lang['b_img']; ?></div>
                   <div class="custom-upload">
                     <input type="file" name="bimg" id="basicImage" class="input input-file">
                     <div class="imitation-upload">
                       <div class="icon-upload"></div>
-                      <input type="text" name="basicImage" readonly placeholder="Выберите изображение" class="input"> </div>
+                      <input type="text" name="basicImage" readonly placeholder="<?php echo $lang['ch_img']; ?>" class="input"> </div>
                   </div>
                 </div>
                 <div class="form-line">
-                  <div class="form-label">Водяной знак</div>
+                  <div class="form-label"><?php echo $lang['w_img']; ?></div>
                   <div class="custom-upload m-disabled">
                     <input type="file" name="wimg" disabled id="waterMark" class="input input-file">
                     <div class="imitation-upload">
                       <div class="icon-upload"></div>
-                      <input type="text" name="waterMark" readonly placeholder="Выберите изображение" class="input"> </div>
+                      <input type="text" name="waterMark" readonly placeholder="<?php echo $lang['ch_img']; ?>" class="input"> </div>
                   </div>
                 </div>
               </section>
@@ -97,7 +97,7 @@
                   <a href="#" data-switch="multi" class="switcher multi"></a>
                   <a href="#" data-switch="single" class="switcher single active"></a>
                 </div>
-                <div class="form-label extra-spaced">Положение</div>
+                <div class="form-label extra-spaced"><?php echo $lang['pos']; ?></div>
                 <div class="location">
                   <ul class="grid-list">
                     <li data-pos="top-left" class="grid-item"></li>
@@ -130,7 +130,7 @@
               -->
               <section class="section opacity disabled">
                 <div class="disabled-area"></div>
-                <div class="form-label">Прозрачность</div>
+                <div class="form-label"><?php echo $lang['op']; ?></div>
                 <div class="wmark-opacity">
                   <div class="opacity-slider"></div>
                 </div>
@@ -139,8 +139,8 @@
               -->
               <section class="section btns disabled">
                 <div class="disabled-area"></div>
-                <input type="reset" value="Сброс" class="btn neg to-left">
-                <input type="submit" value="Скачать" class="btn to-right"> </section>
+                <input type="reset" value="<?php echo $lang['clr']; ?>" class="btn neg to-left">
+                <input type="submit" value="<?php echo $lang['dld']; ?>" class="btn to-right"> </section>
               <input type="hidden" name="mode" value="single" class="hidden-switch">
               <input type="hidden" name="opacity" value="100">
               <input type="hidden" name="yposMulti" value="0">
@@ -157,7 +157,7 @@
     -->
     <footer class="footer">
       <div class="container">
-        <p class="copyright">&copy; 2015, Это наш сайт, пожалуйста, не копируйте и не воруйте его.</p>
+        <p class="copyright">&copy; <?php echo $lang['cprt']; ?></p>
       </div>
     </footer>
     <!-- Подвал конец-->
