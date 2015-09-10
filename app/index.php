@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <!-- endbuild-->
     <script src="./js/vendor/modernizr.min.js"></script>
+    <script type="text/javascript" src="http://vkontakte.ru/js/api/share.js?9" charset="windows-1251"></script>
   </head>
 
   <body>

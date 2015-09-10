@@ -167,7 +167,9 @@ body {
   height: 41px;
   position: absolute;
   overflow: hidden;
-  opacity: 0.6; }
+  opacity: 0.6;
+  left: 0;
+  transition: left 0.5s; }
   .share-icon-link {
     display: block;
     background: #fff url(../img/social-ikons.png) -99px -12px no-repeat;
@@ -176,16 +178,29 @@ body {
     height: 41px; }
     .share-icon-link:hover {
       background-position: -156px -12px; }
+  .share-icon.active {
+    left: 43px; }
+    .share-icon.active + .share-socials-list {
+      left: 0; }
+      .share-icon.active + .share-socials-list:before {
+        width: 15px; }
 
 .share-socials-list {
   margin: 0;
   padding: 0;
   width: 43px;
-  overflow: hidden;
   background: #fff;
   opacity: 0.6;
   position: absolute;
-  left: -43px; }
+  left: -43px;
+  transition: left 0.5s; }
+  .share-socials-list:before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 43px; }
 
 .share-socials-link {
   display: block;

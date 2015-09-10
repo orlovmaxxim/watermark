@@ -1,7 +1,7 @@
 <?php
 
 ini_set('display_errors', 'On');
-
+//ini_set('memory_limit', '256M' );
 require __DIR__.'/../vendor/autoload.php';
 
 use PHPImageWorkshop\ImageWorkshop;
@@ -49,7 +49,8 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 
 			$imageSize = $basicImageLayerWidth*$basicImageLayerHeight*4;
 
-			if($imageSize > 33177600){
+			//if($imageSize > 33177600){
+			if($imageSize > 63000000){
 				header("HTTp/1.1 400 Bad request");
 				header('Content-type: json');
 				echo '{"status": "error", "msg":"Image is to big"}';
@@ -62,22 +63,22 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 			$waterMarkLayerYpos =  $_POST['ypos'];
 
 			
-			if($basicImageLayerWidth > IMG_CONTAINER_WIDTH || $basicImageLayerHeight > IMG_CONTAINER_HEIGHT){
+			// if($basicImageLayerWidth > IMG_CONTAINER_WIDTH || $basicImageLayerHeight > IMG_CONTAINER_HEIGHT){
 
-				$relIndex = $basicImageLayerWidth / $basicImageLayerHeight;
+			// 	$relIndex = $basicImageLayerWidth / $basicImageLayerHeight;
 
-				if( $basicImageLayerWidth > $basicImageLayerHeight ){
+			// 	if( $basicImageLayerWidth > $basicImageLayerHeight ){
 
-						$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerWidth) / IMG_CONTAINER_WIDTH);
-						$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerWidth / $relIndex) / IMG_CONTAINER_HEIGHT);
+			// 			$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerWidth) / IMG_CONTAINER_WIDTH);
+			// 			$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerWidth / $relIndex) / IMG_CONTAINER_HEIGHT);
 
-					} else if ( $basicImageLayerHeight  > $basicImageLayerWidth ){
+			// 		} else if ( $basicImageLayerHeight  > $basicImageLayerWidth ){
 
-						$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerHeight) / IMG_CONTAINER_HEIGHT);
-						$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerHeight * $relIndex) / IMG_CONTAINER_WIDTH);
-					}
+			// 			$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerHeight) / IMG_CONTAINER_HEIGHT);
+			// 			$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerHeight * $relIndex) / IMG_CONTAINER_WIDTH);
+			// 		}
 
-			}
+			// }
 
 			
 
@@ -95,11 +96,11 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 		}
 		header("HTTp/1.1 400 Bad request");
 		header('Content-type: json');
-		echo '{"status": "error"}';
+		echo '{"status": "error1"}';
 		exit;
 	    
 	}
 	header("HTTp/1.1 400 Bad request");
 	header('Content-type: json');
-	echo '{"status": "error"}';
+	echo '{"status": "error2"}';
 	exit;

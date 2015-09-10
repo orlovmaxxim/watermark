@@ -181,6 +181,8 @@ body {
   position: absolute;
   overflow: hidden;
   opacity: 0.6;
+  left: 0;
+  transition: left .5s;
 
   &-link {
     display: block;
@@ -193,19 +195,41 @@ body {
       background-position: -156px -12px;
     }
   }
+
+  &.active{
+    left: 43px;
+
+    &+.share-socials-list{
+      left: 0;
+       &:before{
+        width: 15px;
+       }
+    }
+  }
 }
 .share-socials-list {
   margin: 0;
   padding: 0;
   width: 43px;
-  overflow: hidden;
+  //overflow: hidden;
   background: #fff;
   opacity: 0.6;
   position: absolute;
   left: -43px;
+  transition: left .5s;
 
   &-item {
     @extend .list-reset;
+  }
+
+  &:before{
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    //width: 20px;
+    left: 43px;
   }
 }
 .share-socials-link {
