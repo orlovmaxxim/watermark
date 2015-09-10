@@ -1,12 +1,42 @@
 "use strict";
 
+//-----localisation-----//
+var lang = (function () {
+		var 
+			ru = {
+				'err_res': 'Разрешение изображения больше 2560x1600!',
+				'err_mb': 'Размер файла больше 5 МБ!',
+				'err_frmt' :'Только картинки PNG и JPEG!',
+				'err_wm_sz' :'Водяной знак больше исходного изображения!',
+				'msg_wt' :'Подождите...',
+				'msg_dld' :'Скачать'
+			},
+			en = {
+				'err_res': 'Image resolution bigger than 2560x1600!',
+				'err_mb': 'File size bigger than 5 MB!',
+				'err_frmt' :'Only PNG and JPEG images!',
+				'err_wm_sz' :'Watermark size bigger than basic image!',
+				'msg_wt' :'Wait...',
+				'msg_dld' :'Download'
+			};
+		
+		if(window.location.search === "?lang=en"){
+			return en;
+		} else if(window.location.search === "?lang=ru"){
+			return ru;
+		} else {
+			return ru;
+		}
+				
+}());
+
 //-------image upload module--------//
 var imgUpload = (function(){
 
 	var 
 		_isBasicImageLarge = false,
 		MAX_FILE_SIZE = 5000000, // this/1000000 MB
-		MAX_UNCOMPRESSED_FILE_SIZE = 33177600;//4k color image 3640x2160
+		MAX_UNCOMPRESSED_FILE_SIZE = 16384000;//color image 2560x1600
 
 
 	function initialization(){
@@ -73,7 +103,8 @@ var imgUpload = (function(){
 			if((imgNaturalWidth * imgNaturalHeight * 4) > MAX_UNCOMPRESSED_FILE_SIZE){
 
 				_clearInput(input);
-				input.tooltip({'position': 'top', 'content': 'Разрешение изображения больше 4К!'});
+				//input.tooltip({'position': 'top', 'content': 'Разрешение изображения больше 4К!'});
+				input.tooltip({'position': 'top', 'content': lang.err_res });
 				return;
 			}
 
@@ -166,7 +197,8 @@ var imgUpload = (function(){
 			if((imgNaturalWidth * imgNaturalHeight * 4) > MAX_UNCOMPRESSED_FILE_SIZE){
 
 				_clearInput(input);
-				input.tooltip({'position': 'top', 'content': 'Разрешение изображения больше 4К!'});
+				//input.tooltip({'position': 'top', 'content': 'Разрешение изображения больше 4К!'});
+				input.tooltip({'position': 'top', 'content': lang.err_res});
 				return;
 			}
 
@@ -174,7 +206,8 @@ var imgUpload = (function(){
 				$this.remove();
 				console.log('tooltip: image is to big');
 				_clearInput(input);
-				input.tooltip({'position': 'top', 'content': 'Водяной знак больше исходного изображения!'});
+				//input.tooltip({'position': 'top', 'content': 'Водяной знак больше исходного изображения!'});
+				input.tooltip({'position': 'top', 'content': lang.err_wm_sz});
 			} else {
 
 				if( _isBasicImageLarge ){
@@ -226,7 +259,8 @@ var imgUpload = (function(){
 
 		$(reader).on('abort', $.proxy(function(){
 			console.log('tooltip: image size is to big');
-			$(this).tooltip({'position': 'top', 'content': 'Размер файла больше 2 МБ!'});
+			//$(this).tooltip({'position': 'top', 'content': 'Размер файла больше 2 МБ!'});
+			$(this).tooltip({'position': 'top', 'content': lang.err_mb});
 		},this));
 
 		//show progressbar
@@ -238,13 +272,15 @@ var imgUpload = (function(){
 			if(oe.lengthComputable){
 				progress = parseInt( ((oe.loaded / oe.total) * 100), 10);
 				console.log('progress: '+progress);
+				
 			}
 		});
 
 		if(file.type.match('image\/(png|jpe?g)')){
 			reader.readAsDataURL(file);
 		} else {
-			$(this).closest('.custom-upload').tooltip({'position': 'top', 'content': 'Только картинки PNG и JPEG!'});
+			//$(this).closest('.custom-upload').tooltip({'position': 'top', 'content': 'Только картинки PNG и JPEG!'});
+			$(this).closest('.custom-upload').tooltip({'position': 'top', 'content': lang.err_frmt});
 		}
 		
 	}
@@ -286,7 +322,7 @@ var createWatermark = (function(){
 		if(_submitFlag){
 
 			_submitFlag = false;
-			submitBtn.val('Подождите...');
+			submitBtn.val(lang.msg_wt);
 
 			$.ajax({
 			url: './php/create.php',
@@ -306,7 +342,7 @@ var createWatermark = (function(){
 			}).always(function(){
 
 				_submitFlag = true;
-				submitBtn.val('Скачать');
+				submitBtn.val(lang.msg_dld);
 
 			});
 		}
@@ -315,6 +351,87 @@ var createWatermark = (function(){
 	}
 
 	return {
+		init: initialization
+	}
+
+}());
+
+//-----sharing module-----//
+var shareModule = (function(){
+
+	function initialization(){
+		_setupEventListeners();
+	}
+
+	function _setupEventListeners(){
+		$('.share-icon, .share-socials-list').on('mouseenter', function(e){
+			$('.share-icon').addClass('active');
+		}).on('mouseleave', function(e){
+			$('.share-icon').removeClass('active');
+		});
+		$('.share-socials-link').on('click', _clickHandler);
+	}
+
+	function _clickHandler(e){
+		e.preventDefault;
+
+		var
+			$this = $(this),
+			info = {
+				url: 'http://homework.sarychevstas.ru/gp3',
+				title: 'Генератор водяных знаков',
+				img: 'http://homework.sarychevstas.ru/gp3/img/group-logo.png',
+				text: 'Выпускной проект #3 команды "Супер группа".'
+			};
+
+		if($this.hasClass('vk-icon')){
+
+			_vk(info.url, info.title, info.img, info.text);
+
+		} else if ($this.hasClass('fb-icon')){
+
+			_fb(info.url, info.title, info.img, info.text);
+
+		} else if ($this.hasClass('tw-icon')){
+
+			_tw(info.url, info.title);
+
+		}
+	}
+
+	function _vk(url, title, img, text) {
+        url  = 'http://vkontakte.ru/share.php?';
+        url += 'url='          + encodeURIComponent(url);
+        url += '&title='       + encodeURIComponent(title);
+        url += '&description=' + encodeURIComponent(text);
+        url += '&image='       + encodeURIComponent(img);
+        url += '&noparse=true';
+		_popup(url);
+    }
+
+    function _fb(url, title, img, text) {
+        url  = 'http://www.facebook.com/sharer.php?s=100';
+        url += '&p[title]='     + encodeURIComponent(title);
+        url += '&p[summary]='   + encodeURIComponent(text);
+        url += '&p[url]='       + encodeURIComponent(url);
+        url += '&p[images][0]=' + encodeURIComponent(img);
+        _popup(url);
+    }
+
+    function _tw(url, title) {
+        url  = 'http://twitter.com/share?';
+        url += 'text='      + encodeURIComponent(title);
+        url += '&url='      + encodeURIComponent(url);
+        url += '&counturl=' + encodeURIComponent(url);
+        _popup(url);
+    }
+
+    function _popup(url){
+    	window.open(url,'','toolbar=0,status=0,width=626,height=436');
+    }
+
+	return {
+
 		init: initialization
 	}
 
