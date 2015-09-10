@@ -63,22 +63,22 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 			$waterMarkLayerYpos =  $_POST['ypos'];
 
 			
-			// if($basicImageLayerWidth > IMG_CONTAINER_WIDTH || $basicImageLayerHeight > IMG_CONTAINER_HEIGHT){
+			if($basicImageLayerWidth > IMG_CONTAINER_WIDTH || $basicImageLayerHeight > IMG_CONTAINER_HEIGHT){
 
-			// 	$relIndex = $basicImageLayerWidth / $basicImageLayerHeight;
+				$relIndex = $basicImageLayerWidth / $basicImageLayerHeight;
 
-			// 	if( $basicImageLayerWidth > $basicImageLayerHeight ){
+				if( $basicImageLayerWidth > $basicImageLayerHeight ){
 
-			// 			$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerWidth) / IMG_CONTAINER_WIDTH);
-			// 			$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerWidth / $relIndex) / IMG_CONTAINER_HEIGHT);
+						$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerWidth) / IMG_CONTAINER_WIDTH);
+						$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerWidth / $relIndex) / IMG_CONTAINER_HEIGHT);
 
-			// 		} else if ( $basicImageLayerHeight  > $basicImageLayerWidth ){
+					} else if ( $basicImageLayerHeight  > $basicImageLayerWidth ){
 
-			// 			$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerHeight) / IMG_CONTAINER_HEIGHT);
-			// 			$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerHeight * $relIndex) / IMG_CONTAINER_WIDTH);
-			// 		}
+						$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerHeight) / IMG_CONTAINER_HEIGHT);
+						$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerHeight * $relIndex) / IMG_CONTAINER_WIDTH);
+					}
 
-			// }
+			}
 
 			
 

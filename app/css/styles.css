@@ -348,7 +348,12 @@ body {
   max-width: 100%;
   max-height: 100%; }
 
-.main-wmark-wrapper {
+.main-image-wrapper {
+  right: 0;
+  bottom: 0;
+  margin: auto; }
+
+.main-wmark-wrapper, .main-image-wrapper {
   position: absolute;
   left: 0;
   top: 0;

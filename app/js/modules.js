@@ -81,17 +81,18 @@ var imgUpload = (function(){
 		//remove image if already exist
 		if(basicImage.length){
 			basicImage.remove();
+			imgContainer.removeAttr('style');
 			_isBasicImageLarge = false;
 		}
 		//create new image 
 
-		basicImage = imgContainer.append(imgMarkup).find('.basicImage__img').attr('src', e.target.result);
+		basicImage = imgContainer.prepend(imgMarkup).find('.basicImage__img').attr('src', e.target.result);
 
 		//position image and show after load
 		basicImage.on('load', function(e){
 			var 
 				$this = $(this),
-				imgContainer = $('.main-area'),
+				imgContainer = $('.main-image-wrapper'),
 				input = $('#basicImage').closest('.custom-upload'),
 				imgNaturalWidth = $this.prop('naturalWidth'),
 				imgNaturalHeight = $this.prop('naturalHeight'),
@@ -99,6 +100,7 @@ var imgUpload = (function(){
 				imgHeight = $this.height(),
 				imgContainerWidth = imgContainer.width(),
 				imgContainerHeight = imgContainer.height();
+
 
 			if((imgNaturalWidth * imgNaturalHeight * 4) > MAX_UNCOMPRESSED_FILE_SIZE){
 
@@ -114,27 +116,46 @@ var imgUpload = (function(){
 
 				if(imgNaturalWidth > imgNaturalHeight){
 
-					$this.css('top', Math.round((imgContainerHeight - imgHeight)/2) + 'px' );
+					//$this.css('top', Math.round((imgContainerHeight - imgHeight)/2) + 'px' );
+
+					imgContainer.css({
+						'height' : imgHeight
+					});
 
 				} else {
 
-					$this.css('left', Math.round((imgContainerWidth - imgWidth)/2) + 'px' );	
+					//$this.css('left', Math.round((imgContainerWidth - imgWidth)/2) + 'px' );	
+					
+					imgContainer.css({
+						'width' : imgWidth
+					});
 				}
 
 			} else {
 
-				$this.css({
-					'top': Math.round((imgContainerHeight - imgHeight)/2) + 'px',
-					'left': Math.round((imgContainerWidth - imgWidth)/2) + 'px' 	
+				// $this.css({
+				// 	'top': Math.round((imgContainerHeight - imgHeight)/2) + 'px',
+				// 	'left': Math.round((imgContainerWidth - imgWidth)/2) + 'px' 	
+				// });
+				
+				imgContainer.css({
+					'width' : imgWidth,
+					'height' : imgHeight
 				});
 				
 			}
+
+			// imgContainer.css({
+			// 	'width' : imgWidth,
+			// 	'height' : imgHeight
+			// });
+
 			$this.css('opacity', 1);
-			$('.main-image-wrapper').css({
-						/*'position' : 'relative',*/
-						'left' : $('.basicImage__img').css('left'),
-						'top' : $('.basicImage__img').css('top')
-					})
+			// $('.main-image-wrapper').css({
+			// 			/*'position' : 'relative',*/
+			// 			'left' : $('.basicImage__img').css('left'),
+			// 			'top' : $('.basicImage__img').css('top')
+			// 		})
 
 		});
 
@@ -171,6 +192,7 @@ var imgUpload = (function(){
 		//remove image if already exist
 		if(waterMark.length){
 			waterMark.remove();
+			imgContainer.removeAttr('style');
 		}
 
 		//append new image
@@ -242,9 +264,9 @@ var imgUpload = (function(){
 				 });
 				
 			}		
-					$('.main-image-wrapper').css({
-						'position' : 'relative',
-					})
+					// $('.main-image-wrapper').css({
+					// 	'position' : 'relative',
+					// })
 					drag();
 					singleModule.init();
 		});
