@@ -355,14 +355,14 @@ body {
   overflow: hidden; }
 
 .watermark {
-  cursor: move;
+  /* cursor: move; */
   float: left; }
 
 #loadFrame {
   display: none; }
 
 .basicImage__img, .waterMark__img {
-  position: absolute;
+  /* position: absolute; */
   max-width: 100%;
   max-height: 100%;
   opacity: 0;
@@ -719,6 +719,9 @@ body {
   height: 3px;
   position: relative;
   background-color: #dbe1e8; }
+
+.opacity-range {
+  width: 100%; }
 
 .ui-slider-range {
   position: absolute;

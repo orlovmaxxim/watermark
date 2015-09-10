@@ -1,12 +1,13 @@
 var drag = function(){
 
-	var watermarkPic = $('.waterMark__img'),
+	var watermarkPic = $('.main-wmark-wrapper'),
 			mainPic = $('.basicImage__img');
 
 		//если имеется класс single, можно выпонлнять драгабл 
 		if ($('.switcher').hasClass('single')) {
 			watermarkPic.draggable ({
-				containment: mainPic
+				containment: mainPic,
+				cursor: "move"
 			});
 		};
 
@@ -17,6 +18,8 @@ var drag = function(){
 
 					$('[name = xpos]').val(parseInt(posX,10));
 					$('[name = ypos]').val(parseInt(posY,10));
+
+					$('.grid-item').removeClass('active');
 		});
 
 };

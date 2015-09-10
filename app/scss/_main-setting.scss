@@ -359,6 +359,7 @@
 .wmark-opacity {
   margin: 30px 0 14px;
 }
+
 .opacity-slider {
   border-radius: 2px;
   border: none;
@@ -366,6 +367,11 @@
   position: relative;
   background-color: $color-light-blue;
 }
+
+.opacity-range {
+  width: 100%;
+}
+
 .ui-slider {
   &-range {
     position: absolute;
