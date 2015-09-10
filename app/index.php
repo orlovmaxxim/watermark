@@ -23,7 +23,6 @@
     <link rel="stylesheet" href="css/styles.css">
     <!-- endbuild-->
     <script src="./js/vendor/modernizr.min.js"></script>
-    <script type="text/javascript" src="http://vkontakte.ru/js/api/share.js?9" charset="windows-1251"></script>
   </head>
 
   <body>
@@ -58,8 +57,9 @@
             <section class="main-section">
               <div class="main-area-title"><?php echo $lang['wm_gn']; ?></div>
               <div class="main-area">
-                <!--.main-image-wrapper.main-wmark-wrapper
-                -->
+                <div class="main-image-wrapper">
++                  <div class="main-wmark-wrapper"></div>
++                </div>
               </div>
             </section>
           </div>
@@ -115,14 +115,14 @@
                     <div class="control-item">
                       <div class="control-tip vertical">X</div>
                       <input type="text" name="xpos" value="0" class="control">
-                      <a href="" class="control-arrow top"></a>
-                      <a href="" class="control-arrow btm"></a>
+                      <a href="" class="control-arrow top top-x"></a>
++                     <a href="" class="control-arrow btm btm-x"></a>
                     </div>
                     <div class="control-item">
                       <div class="control-tip horizontal">Y</div>
                       <input type="text" name="ypos" value="0" class="control">
-                      <a href="" class="control-arrow top"></a>
-                      <a href="" class="control-arrow btm"></a>
+                      <a href="" class="control-arrow top top-y"></a>
++                     <a href="" class="control-arrow btm btm-y"></a>
                     </div>
                   </div>
                 </div>
@@ -133,7 +133,9 @@
                 <div class="disabled-area"></div>
                 <div class="form-label"><?php echo $lang['op']; ?></div>
                 <div class="wmark-opacity">
-                  <div class="opacity-slider"></div>
+                  <div class="opacity-slider">
++                    <input type="range" min="0" max="1" step="0.05" value="1" class="opacity-range ui-slider-range ui-widget-header ui-corner-all ui-slider-range-min"> 
+                  </div>
                 </div>
               </section>
               <!--Created by Vital on 26.08.2015.
@@ -192,6 +194,7 @@
     <script src="js/main2.js"></script>
     <script src="js/drag.js"></script>
     <script src="js/onlyInteger.js"></script>
+    <script src="js/opacity.js"></script>
     <!-- endbuild-->
   </body>
 
