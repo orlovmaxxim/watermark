@@ -487,6 +487,7 @@ var positionModule = (function(){
 		$('.switchers').children('.switcher.multi').addClass('active');
 		console.log("Multi active");
 		multiModule.init();
+		reproduceWaterm();
 		drag();
 	}
 
@@ -700,6 +701,7 @@ var multiModule = (function(){
 
 	return {
 		init: initial
+		/*reproduceWaterm: reproduceWaterm()*/
 	};
 
 })();
