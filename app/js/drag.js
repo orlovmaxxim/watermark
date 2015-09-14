@@ -7,19 +7,24 @@ var drag = function(){
 		if ($('.switcher').hasClass('single')) {
 			watermarkPic.draggable ({
 				containment: mainPic,
-				cursor: "move"
+				cursor: 'move'
 			});
 		};
 
 		//вычисляем координаты ватермарка (drag event)
 		watermarkPic.on('drag', function(){
-			var posX = watermarkPic.css('left'),
-					posY = watermarkPic.css('top');
+			var	
+				posX = watermarkPic.css('left'),
+				posY = watermarkPic.css('top');
 
-					$('[name = xpos]').val(parseInt(posX,10));
-					$('[name = ypos]').val(parseInt(posY,10));
+				$('[name = xpos]').val(parseInt(posX,10));
+				$('[name = ypos]').val(parseInt(posY,10));
 
-					$('.grid-item').removeClass('active');
+				$('.grid-item').removeClass('active');
+		}).on('dragstart', function(e,ui){	
+			$(this).css('transition', 'none');
+		}).on('dragstop', function(e,ui){	
+			$(this).css('transition', 'left .5s, top .5s');
 		});
 
 };

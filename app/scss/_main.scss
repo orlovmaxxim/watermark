@@ -41,6 +41,7 @@
   left: 0;
   top: 0;
   overflow: hidden;
+  transition: left .5s, top .5s;
 }
 .watermark {
   /* cursor: move; */

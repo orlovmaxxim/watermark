@@ -70,12 +70,12 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 				if( $basicImageLayerWidth > $basicImageLayerHeight ){
 
 						$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerWidth) / IMG_CONTAINER_WIDTH);
-						$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerWidth / $relIndex) / IMG_CONTAINER_HEIGHT);
+						$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerHeight ) / (IMG_CONTAINER_WIDTH / $relIndex));
 
 					} else if ( $basicImageLayerHeight  > $basicImageLayerWidth ){
 
 						$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerHeight) / IMG_CONTAINER_HEIGHT);
-						$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerHeight * $relIndex) / IMG_CONTAINER_WIDTH);
+						$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerWidth ) / (IMG_CONTAINER_HEIGHT * $relIndex));
 					}
 
 			}

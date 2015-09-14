@@ -55,17 +55,25 @@ var imgUpload = (function(){
 		var 
 			$this = $(this),
 			img = $this[0].files[0],
-			waterMark = $('.waterMark__img');
+			waterMark = $('.waterMark__img'),
+			waterMarkFile = $('#waterMark'),
+			watermarkInput = waterMarkFile.siblings('.imitation-upload').find('input');
 		//if img not undefind read it from local machine
 		if(img){
 			if(waterMark.length){
-				//TODO: change to wm clear function
 				waterMark.remove();
+				watermarkInput.val('');
+				_resetFile(waterMarkFile);
 			}
 			//call file reader with event target scope
 			_readFile.call(this, img, _basicImageLoadCallback);
 		}
 		
+	}
+
+	function _resetFile(el) {
+	 	el.wrap('<form>').closest('form').get(0).reset();
+	 	el.unwrap();
 	}
 
 	//callback function for basikImage loading
@@ -340,7 +348,8 @@ var createWatermark = (function(){
 	}
 
 	function _setupEventListeners(){
-		$('#main-form').on('submit', _submitForm);
+		$('#main-form').on('submit', _submitForm)
+						.on('reset', _resetForm);
 	}
 
 	function _submitForm(e){
@@ -378,6 +387,28 @@ var createWatermark = (function(){
 			});
 		}
 		
+
+	}
+
+	function _resetForm(e){
+		e.preventDefault();
+
+		var 
+			inputs = $('input[type=hidden]').add('input[name=xpos], input[name=ypos]'),
+			switchers = $('.switchers'),
+			slider = $('.opacity-slider'),
+			grid = $('.grid-list'),
+			waterMark = $('.main-wmark-wrapper');
+
+		inputs.val('0');
+		switchers.find('a').removeClass('active').closest('.single').addClass('active');
+		grid.find('.active').removeClass('active');
+		slider.slider('value', 100);
+		waterMark.css({'left': 0 , 'top': 0}).find('img').css('opacity', 1);
+
+		
+
+
 
 	}
 
