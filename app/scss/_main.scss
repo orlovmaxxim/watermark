@@ -48,6 +48,14 @@
   float: left;
 }
 
+.main-wmark-wrapper{
+  @extend .cfix;
+}
+
+.clonned, .waterMark__img {
+  float: left;
+}
+
 #loadFrame {
   display: none;
 }

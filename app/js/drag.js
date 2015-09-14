@@ -1,15 +1,37 @@
-var drag = function(){
+var drag = function(type){
 
 	var watermarkPic = $('.main-wmark-wrapper'),
 			mainPic = $('.basicImage__img');
 
 		//если имеется класс single, можно выпонлнять драгабл 
-		if ($('.switcher').hasClass('single')) {
+		// if ($('.switcher').hasClass('single')) {
+		// 	watermarkPic.draggable ({
+		// 		containment: mainPic,
+		// 		cursor: "move"
+		// 	});
+		// };
+
+		// if ($('.switcher').hasClass('multi')) {
+		// 	watermarkPic.draggable ({
+		// 		containment: '',
+		// 		cursor: 'move'
+		// 	});
+		// };
+		
+		if(watermarkPic.hasClass('ui-draggable')){
+			watermarkPic.draggable('destroy');
+		}
+
+		if(type === 'single'){
 			watermarkPic.draggable ({
 				containment: mainPic,
-				cursor: 'move'
+				cursor: "move"
 			});
-		};
+		} else if (type === 'multi'){
+			watermarkPic.draggable ({
+				cursor: "move"
+			});
+		}
 
 		//вычисляем координаты ватермарка (drag event)
 		watermarkPic.on('drag', function(){

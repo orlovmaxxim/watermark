@@ -33,13 +33,14 @@
 .cfix:before,
 .container:before,
 .columns:before, .share:before,
+.main-wmark-wrapper:before,
 .location:before,
 .grid-list:before,
-.cfix:after, .container:after, .columns:after, .share:after, .location:after, .grid-list:after {
+.cfix:after, .container:after, .columns:after, .share:after, .main-wmark-wrapper:after, .location:after, .grid-list:after {
   content: "";
   display: table; }
 
-.cfix:after, .container:after, .columns:after, .share:after, .location:after, .grid-list:after {
+.cfix:after, .container:after, .columns:after, .share:after, .main-wmark-wrapper:after, .location:after, .grid-list:after {
   clear: both; }
 
 .to-right {
@@ -366,6 +367,9 @@ input {
 
 .watermark {
   /* cursor: move; */
+  float: left; }
+
+.clonned, .waterMark__img {
   float: left; }
 
 #loadFrame {

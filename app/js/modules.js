@@ -275,7 +275,7 @@ var imgUpload = (function(){
 					// $('.main-image-wrapper').css({
 					// 	'position' : 'relative',
 					// })
-					drag();
+					drag('single');
 					singleModule.init();
 		});
 		
@@ -513,21 +513,23 @@ var positionModule = (function(){
 	}
 
 	// Активируем мульти-режим
-	var _multiTypeActive = function() {
+	var _multiTypeActive = function(e) {
+		e.preventDefault();
 		$('.switchers').children('.switcher.single').removeClass('active');
 		$('.switchers').children('.switcher.multi').addClass('active');
 		console.log("Multi active");
 		multiModule.init();
-		drag();
+		drag('multi');
 	}
 
 	// Активируем одиночный режим
-	var _singleTypeActive = function() {
+	var _singleTypeActive = function(e) {
+		e.preventDefault();
 		$('.switchers').children('.switcher.multi').removeClass('active');
 		$('.switchers').children('.switcher.single').addClass('active');
 		console.log("Single active");
 		singleModule.init();
-		drag();
+		drag('single');
 		/*return false;*/
 	}
 
@@ -637,6 +639,7 @@ var singleModule = (function(){
 		if($this.val() > (imgWidth - wmarkWidth)) {
 			$this.val(imgWidth - wmarkWidth);
 		}
+
 		$('.main-wmark-wrapper').css({
 			'left' : $this.val() + 'px'
 		})
@@ -676,11 +679,13 @@ var singleModule = (function(){
 				currentPosX = parseInt(wmarkWrap.css('left'), 10),
 				currentPosY = parseInt(wmarkWrap.css('top'), 10),
 				maxPosX = imgWrap.outerWidth() - wmarkWrap.outerWidth(),
-        maxPosY = imgWrap.outerHeight() - wmarkWrap.outerHeight();
+        		maxPosY = imgWrap.outerHeight() - wmarkWrap.outerHeight();
+
+        		console.log(maxPosX, maxPosY);
 				/*currentWidth = wmarkWrap.css('width'), //пока за место проверки
 				currentHeight = wmarkWrap.css('height'); // пока за место проверки*/
 
-				if( (e.target.className == "control-arrow top top-x") && (currentPosX!=maxPosX)) {
+				if( (e.target.className == "control-arrow top top-x") && (currentPosX<maxPosX)) {
 
 					wmarkWrap.css('left', currentPosX + minStepConst);
 					$('[name = xpos]').val(currentPosX + minStepConst);
@@ -719,14 +724,202 @@ var multiModule = (function(){
 
 	var initial = function () {
 		_setUpListeners();
+		_reproduceWatermark();
 	};
 
 	var _setUpListeners = function () {
-		
+		$('[name = xpos]').on('keyup change', _writeNumberInputX);
+		$('[name = ypos]').on('keyup change', _writeNumberInputY);
+		$('.control-arrow').off('click').on('click', _arrowsPosExchange);
 	}
 
-	var reproduceWaterm = function () {
+	// вводим значение в инпут поле X
+	var _writeNumberInputX = function () {
+
+		var $this = $(this),
+				wmarkWrap = $('.waterMark__img'),
+				imgWrap = $('.basicImage__img'),
+				wmarkWidth = wmarkWrap.outerWidth(),
+				imgWidth = imgWrap.outerWidth();
+
+		//вызываем функция ввода только чисел
+		onlyInteger($this);
+
+		//проверка на максимально допустимое значение
+		// if($this.val() > (imgWidth - wmarkWidth)) {
+		// 	$this.val(imgWidth - wmarkWidth);
+		// }
+
+		// console.log($this.val());
+		// console.log(imgWidth - wmarkWidth);
+		// $('.main-wmark-wrapper').css({
+		// 	'left' : $this.val() + 'px'
+		// });
+
+		var 
+			basicImage = $('.main-image-wrapper'),
+			waterMarkContainer = $('.main-wmark-wrapper'),
+			waterMark = waterMarkContainer.find('img'),
+			waterMarkSizes = { width: waterMark.width(), height: waterMark.height() },
+			waterMarkCounts = { x: Math.round(basicImage.width()*2 / waterMarkSizes.width), y: Math.round(basicImage.height()*2 / waterMarkSizes.height) };
+
+			$.each($('.waterMark__img'), function(idx, val){
+				if(idx%waterMarkCounts.x != 0){
+					$(val).css('margin-left', 10);
+
+				}
+			});
+
+			waterMarkContainer.width(waterMarkContainer.width() + 10*(waterMarkCounts.x-1) );
+
 		
+		
+
+
+	};
+
+	// вводим значение в инпут поле Y
+	var _writeNumberInputY = function () {
+		//сброс подсветки с сетки
+		$('.grid-item').removeClass('active');
+
+		var $this = $(this),
+				wmarkWrap = $('.main-wmark-wrapper'),
+				imgWrap = $('.basicImage__img'),
+				wmarkHeight = wmarkWrap.outerHeight(),
+				imgHeight = imgWrap.outerHeight();
+
+		//вызываем функция ввода только чисел
+		onlyInteger($this);
+
+		//проверка на максимально допустимое значение
+		if($this.val() > (imgHeight - wmarkHeight)) {
+			$this.val(imgHeight - wmarkHeight);
+		}
+		$('.main-wmark-wrapper').css({
+			'top' : $this.val() + 'px'
+		})
+	};
+
+
+	var _reproduceWatermark = function () {
+		
+		var 
+			basicImage = $('.main-image-wrapper'),
+			waterMarkContainer = $('.main-wmark-wrapper'),
+			waterMark = waterMarkContainer.find('img'),
+			waterMarkSizes = { width: waterMark.width(), height: waterMark.height() },
+			waterMarkCounts = { x: Math.round(basicImage.width()*2 / waterMarkSizes.width), y: Math.round(basicImage.height()*2 / waterMarkSizes.height) };
+		
+		waterMarkContainer.width(waterMarkSizes.width * waterMarkCounts.x).height(waterMarkSizes.height * waterMarkCounts.y);
+		for (var i = 0; i < waterMarkCounts.x * waterMarkCounts.y - 1; i++ ){
+			waterMark.clone().addClass('clonned').appendTo(waterMarkContainer);
+		}
+
+		$('.waterMark__img').css('margin-left', 0);
+			
+
+	};
+
+	//меняем координаты стрелками
+	var _arrowsPosExchange = function(e) {
+		e.preventDefault();
+
+
+		var $this = $(this),
+				minStepConst = 1;
+				// wmarkWrap = $('.main-wmark-wrapper'),
+				// imgWrap = $('.basicImage__img'),
+				// currentPosX = parseInt(wmarkWrap.css('left'), 10),
+				// currentPosY = parseInt(wmarkWrap.css('top'), 10),
+				// maxPosX = imgWrap.outerWidth() - wmarkWrap.outerWidth(),
+    //     		maxPosY = imgWrap.outerHeight() - wmarkWrap.outerHeight();
+
+    //     		console.log(maxPosX, maxPosY);
+				/*currentWidth = wmarkWrap.css('width'), //пока за место проверки
+				currentHeight = wmarkWrap.css('height'); // пока за место проверки*/
+
+		var 
+			basicImage = $('.main-image-wrapper'),
+			waterMarkContainer = $('.main-wmark-wrapper'),
+			waterMark = waterMarkContainer.find('img'),
+			waterMarkSizes = { width: waterMark.width(), height: waterMark.height() },
+			waterMarkCounts = { x: Math.round(basicImage.width()*2 / waterMarkSizes.width), y: Math.round(basicImage.height()*2 / waterMarkSizes.height) };
+
+			// $.each($('.waterMark__img'), function(idx, val){
+			// 	if(idx%waterMarkCounts.x != 0){
+			// 		$(val).css('margin-left', 10);
+
+			// 	}
+			// });
+
+			// waterMarkContainer.width(waterMarkContainer.width() + 10*(waterMarkCounts.x-1) );
+
+				if (e.target.className === "control-arrow top top-x") {
+
+					
+					$.each($('.waterMark__img'), function(idx, val){
+						if(idx%waterMarkCounts.x != 0){
+							var 
+								offset = $(val).css('margin-left');
+
+							$(val).css('margin-left', parseInt(offset)+minStepConst );
+
+						}
+					});
+					waterMarkContainer.width(waterMarkContainer.width() + minStepConst*(waterMarkCounts.x-1) );
+
+					//$('[name = xpos]').val(currentPosX + minStepConst);
+
+				} else if(e.target.className === "control-arrow btm btm-x") {
+
+						$.each($('.waterMark__img'), function(idx, val){
+						if(idx%waterMarkCounts.x != 0){
+							var 
+								offset = $(val).css('margin-left');
+
+							$(val).css('margin-left', parseInt(offset)-minStepConst );
+
+						}
+					});
+					waterMarkContainer.width(waterMarkContainer.width() - minStepConst*(waterMarkCounts.x-1) );
+
+					//$('[name = xpos]').val(currentPosX + minStepConst);
+
+					} else if(e.target.className === "control-arrow top top-y") {
+
+						$.each($('.waterMark__img'), function(idx, val){
+							
+								var 
+									offset = $(val).css('margin-bottom');
+
+								$(val).css('margin-bottom', parseInt(offset)+minStepConst );
+
+							
+						});
+						waterMarkContainer.height(waterMarkContainer.height() + minStepConst*(waterMarkCounts.y-1) );
+
+					} else if(e.target.className === "control-arrow btm btm-y" ){
+
+						$.each($('.waterMark__img'), function(idx, val){
+							
+								var 
+									offset = $(val).css('margin-bottom');
+
+								$(val).css('margin-bottom', parseInt(offset)-minStepConst );
+
+							
+						});
+						waterMarkContainer.height(waterMarkContainer.height() - minStepConst*(waterMarkCounts.y-1) );
+
+					}
+				
+				/*wmarkWrap.css({
+				'height' : currentHeight,
+				'width' : currentWidth
+			})*/
+				//$('.grid-item').removeClass('active');
+
 	};
 
 	return {
