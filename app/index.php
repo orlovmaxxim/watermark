@@ -133,9 +133,7 @@
                 <div class="disabled-area"></div>
                 <div class="form-label"><?php echo $lang['op']; ?></div>
                 <div class="wmark-opacity">
-                  <div class="opacity-slider">
-                    <input type="range" min="0" max="1" step="0.05" value="1" class="opacity-range ui-slider-range ui-widget-header ui-corner-all ui-slider-range-min"> 
-                  </div>
+                  <div class="opacity-slider"></div>
                 </div>
               </section>
               <!--Created by Vital on 26.08.2015.

@@ -398,6 +398,7 @@
     content: " ";
     display: block;
     box-shadow: 0 1px 2px #969698;
+    outline: none;
 
     &.ui-state-active {
       background-color: $color-pink;
