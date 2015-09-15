@@ -16,7 +16,7 @@ $(document).ready(function() {
 
 	$('.opacity-slider').on('slide', function(e,ui){
 		$('input[name=opacity]').val(ui.value);
-		$('.waterMark__img').css('opacity', ui.value / 100 );
+		$('.main-wmark-wrapper').css('opacity', ui.value / 100 );
 	});
 
 });

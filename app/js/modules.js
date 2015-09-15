@@ -65,6 +65,15 @@ var imgUpload = (function(){
 				watermarkInput.val('');
 				_resetFile(waterMarkFile);
 			}
+
+			if($('[name=mode]').val() === 0){
+				singleModule.destroy();
+			} else {
+				multiModule.destroy();
+			}
+
+			$('.disabled-area').css('display', 'block');
+
 			//call file reader with event target scope
 			_readFile.call(this, img, _basicImageLoadCallback);
 		}
@@ -461,9 +470,10 @@ var shareModule = (function(){
 		}
 	}
 
-	function _vk(url, title, img, text) {
+	function _vk(purl, title, img, text) {
+		var url = '';
         url  = 'http://vkontakte.ru/share.php?';
-        url += 'url='          + encodeURIComponent(url);
+        url += 'url='          + encodeURIComponent(purl);
         url += '&title='       + encodeURIComponent(title);
         url += '&description=' + encodeURIComponent(text);
         url += '&image='       + encodeURIComponent(img);
@@ -471,20 +481,22 @@ var shareModule = (function(){
 		_popup(url);
     }
 
-    function _fb(url, title, img, text) {
+    function _fb(purl, title, img, text) {
+    	var url = '';
         url  = 'http://www.facebook.com/sharer.php?s=100';
         url += '&p[title]='     + encodeURIComponent(title);
         url += '&p[summary]='   + encodeURIComponent(text);
-        url += '&p[url]='       + encodeURIComponent(url);
+        url += '&p[url]='       + encodeURIComponent(purl);
         url += '&p[images][0]=' + encodeURIComponent(img);
         _popup(url);
     }
 
-    function _tw(url, title) {
+    function _tw(purl, title) {
+    	var url = '';
         url  = 'http://twitter.com/share?';
         url += 'text='      + encodeURIComponent(title);
-        url += '&url='      + encodeURIComponent(url);
-        url += '&counturl=' + encodeURIComponent(url);
+        url += '&url='      + encodeURIComponent(purl);
+        url += '&counturl=' + encodeURIComponent(purl);
         _popup(url);
     }
 
@@ -515,9 +527,17 @@ var positionModule = (function(){
 	// Активируем мульти-режим
 	var _multiTypeActive = function(e) {
 		e.preventDefault();
+		var
+			markup = '<div class="intervals"><div class="interval hor"></div><div class="interval vert"></div></div>';
 		$('.switchers').children('.switcher.single').removeClass('active');
 		$('.switchers').children('.switcher.multi').addClass('active');
 		console.log("Multi active");
+
+		$('.controls').addClass('for-multi');
+		$('div.location').prepend(markup);
+		
+		singleModule.destroy();
+		multiModule.destroy();
 		multiModule.init();
 		drag('multi');
 	}
@@ -528,6 +548,12 @@ var positionModule = (function(){
 		$('.switchers').children('.switcher.multi').removeClass('active');
 		$('.switchers').children('.switcher.single').addClass('active');
 		console.log("Single active");
+
+		$('.controls').removeClass('for-multi');
+		$('.intervals').remove();
+		
+		multiModule.destroy();
+		singleModule.destroy();
 		singleModule.init();
 		drag('single');
 		/*return false;*/
@@ -545,6 +571,24 @@ var singleModule = (function(){
 
 	var initial = function () {
 		_setUpListeners();
+		$('[name=mode]').val(0);
+	};
+
+	var destroy = function() {
+		var 
+			inputs = $('input[type=hidden]').add('input[name=xpos], input[name=ypos]'),
+			slider = $('.opacity-slider'),
+			grid = $('.grid-list'),
+			waterMark = $('.main-wmark-wrapper');
+
+		inputs.val('0').filter('[name=opacity]').val(100);
+		grid.find('.active').removeClass('active');
+		slider.slider('value', 100);
+		waterMark.css({'left': 0 , 'top': 0, 'opacity': 1});
+		$('[name = xpos]').off('keyup change');
+		$('[name = ypos]').off('keyup change');
+		$('.grid-item').off('click');
+		$('.control-arrow').off('click');
 	};
 
 	var _setUpListeners = function () {
@@ -552,7 +596,7 @@ var singleModule = (function(){
 		$('[name = ypos]').on('keyup change', _writeNumberInputY);
 		$('.grid-item').on('click', _squarePosActive);
 		$('.control-arrow').on('click', _arrowsPosExchange);
-	}
+	};
 
 	// позиционируем ватермарк через сетку
 	var _squarePosActive = function() {
@@ -715,7 +759,8 @@ var singleModule = (function(){
 	};
 	
 	return {
-		init: initial
+		init: initial,
+		destroy: destroy
 	};
 
 })();
@@ -725,12 +770,32 @@ var multiModule = (function(){
 	var initial = function () {
 		_setUpListeners();
 		_reproduceWatermark();
+		$('[name=mode]').val(1);
+	};
+
+	var destroy = function() {
+		var 
+			inputs = $('input[type=hidden]').add('input[name=xpos], input[name=ypos]'),
+			slider = $('.opacity-slider'),
+			grid = $('.grid-list'),
+			waterMark = $('.main-wmark-wrapper'),
+			clonnedWaterMark = waterMark.find('.clonned');
+
+		inputs.val('0').filter('[name=opacity]').val(100);
+		grid.find('.active').removeClass('active');
+		slider.slider('value', 100);
+		clonnedWaterMark.remove();
+		waterMark.removeAttr('style').find('img').css('margin', 0);
+		$('[name = xpos]').off('keyup change');
+		$('[name = ypos]').off('keyup change');
+		$('.control-arrow').off('click');
+		
 	};
 
 	var _setUpListeners = function () {
 		$('[name = xpos]').on('keyup change', _writeNumberInputX);
 		$('[name = ypos]').on('keyup change', _writeNumberInputY);
-		$('.control-arrow').off('click').on('click', _arrowsPosExchange);
+		$('.control-arrow').on('click', _arrowsPosExchange);
 	}
 
 	// вводим значение в инпут поле X
@@ -765,14 +830,19 @@ var multiModule = (function(){
 
 			$.each($('.waterMark__img'), function(idx, val){
 				if(idx%waterMarkCounts.x != 0){
-					$(val).css('margin-left', 10);
+					//console.log($(val).css('margin-left'));
+					$(val).css('margin-left', $this.val()+'px');
 
 				}
 			});
 
-			waterMarkContainer.width(waterMarkContainer.width() + 10*(waterMarkCounts.x-1) );
+			//console.log($this.val());
 
-		
+			waterMarkContainer.width(Math.round(basicImage.width()*2) + parseInt($this.val())*(waterMarkCounts.x-1) );
+			_setPatternSizes();
+			$('.interval.hor').width(parseInt($this.val()));
+			console.log(parseInt($this.val()));
+			//console.log(waterMarkContainer.width() + parseInt($this.val())*(waterMarkCounts.x-1) );
 		
 
 
@@ -792,15 +862,36 @@ var multiModule = (function(){
 		//вызываем функция ввода только чисел
 		onlyInteger($this);
 
-		//проверка на максимально допустимое значение
-		if($this.val() > (imgHeight - wmarkHeight)) {
-			$this.val(imgHeight - wmarkHeight);
-		}
-		$('.main-wmark-wrapper').css({
-			'top' : $this.val() + 'px'
-		})
+		var 
+			basicImage = $('.main-image-wrapper'),
+			waterMarkContainer = $('.main-wmark-wrapper'),
+			waterMark = waterMarkContainer.find('img'),
+			waterMarkSizes = { width: waterMark.width(), height: waterMark.height() },
+			waterMarkCounts = { x: Math.round(basicImage.width()*2 / waterMarkSizes.width), y: Math.round(basicImage.height()*2 / waterMarkSizes.height) };
+
+			$.each($('.waterMark__img'), function(idx, val){
+				
+					//console.log($(val).css('margin-left'));
+					$(val).css('margin-bottom', $this.val()+'px');
+
+			
+			});
+
+			console.log($this.val());
+
+			waterMarkContainer.height(Math.round(basicImage.height()*2) + parseInt($this.val())*(waterMarkCounts.y-1) );
+			_setPatternSizes();
+			$('.interval.vert').height(parseInt($this.val()));
+			console.log(waterMarkContainer.height() + parseInt($this.val())*(waterMarkCounts.y-1) );
 	};
 
+	var _setPatternSizes = function(){
+		var
+			waterMarkContainer = $('.main-wmark-wrapper');
+
+		$('[name=patternWidth]').val(waterMarkContainer.width());
+		$('[name=patternHeight').val(waterMarkContainer.height());
+	}
 
 	var _reproduceWatermark = function () {
 		
@@ -817,6 +908,7 @@ var multiModule = (function(){
 		}
 
 		$('.waterMark__img').css('margin-left', 0);
+		_setPatternSizes();
 			
 
 	};
@@ -844,8 +936,9 @@ var multiModule = (function(){
 			waterMarkContainer = $('.main-wmark-wrapper'),
 			waterMark = waterMarkContainer.find('img'),
 			waterMarkSizes = { width: waterMark.width(), height: waterMark.height() },
-			waterMarkCounts = { x: Math.round(basicImage.width()*2 / waterMarkSizes.width), y: Math.round(basicImage.height()*2 / waterMarkSizes.height) };
-
+			waterMarkCounts = { x: Math.round(basicImage.width()*2 / waterMarkSizes.width), y: Math.round(basicImage.height()*2 / waterMarkSizes.height) },
+			xPos = $('input[name=xpos]'),
+			yPos = $('input[name=ypos]');
 			// $.each($('.waterMark__img'), function(idx, val){
 			// 	if(idx%waterMarkCounts.x != 0){
 			// 		$(val).css('margin-left', 10);
@@ -855,7 +948,7 @@ var multiModule = (function(){
 
 			// waterMarkContainer.width(waterMarkContainer.width() + 10*(waterMarkCounts.x-1) );
 
-				if (e.target.className === "control-arrow top top-x") {
+				if (e.target.className === "control-arrow top top-x" && xPos.val() < waterMarkSizes.width) {
 
 					
 					$.each($('.waterMark__img'), function(idx, val){
@@ -868,10 +961,10 @@ var multiModule = (function(){
 						}
 					});
 					waterMarkContainer.width(waterMarkContainer.width() + minStepConst*(waterMarkCounts.x-1) );
-
+					xPos.val(parseInt(xPos.val())+minStepConst);
 					//$('[name = xpos]').val(currentPosX + minStepConst);
 
-				} else if(e.target.className === "control-arrow btm btm-x") {
+				} else if(e.target.className === "control-arrow btm btm-x" && xPos.val() > 0) {
 
 						$.each($('.waterMark__img'), function(idx, val){
 						if(idx%waterMarkCounts.x != 0){
@@ -883,10 +976,10 @@ var multiModule = (function(){
 						}
 					});
 					waterMarkContainer.width(waterMarkContainer.width() - minStepConst*(waterMarkCounts.x-1) );
-
+					xPos.val(parseInt(xPos.val())-minStepConst);
 					//$('[name = xpos]').val(currentPosX + minStepConst);
 
-					} else if(e.target.className === "control-arrow top top-y") {
+					} else if(e.target.className === "control-arrow top top-y" && yPos.val() < waterMarkSizes.height) {
 
 						$.each($('.waterMark__img'), function(idx, val){
 							
@@ -898,8 +991,8 @@ var multiModule = (function(){
 							
 						});
 						waterMarkContainer.height(waterMarkContainer.height() + minStepConst*(waterMarkCounts.y-1) );
-
-					} else if(e.target.className === "control-arrow btm btm-y" ){
+						yPos.val(parseInt(yPos.val())+minStepConst);
+					} else if(e.target.className === "control-arrow btm btm-y" && yPos.val() > 0){
 
 						$.each($('.waterMark__img'), function(idx, val){
 							
@@ -911,9 +1004,11 @@ var multiModule = (function(){
 							
 						});
 						waterMarkContainer.height(waterMarkContainer.height() - minStepConst*(waterMarkCounts.y-1) );
-
+						yPos.val(parseInt(yPos.val())-minStepConst);
 					}
-				
+				_setPatternSizes();
+				$('.interval.hor').width(parseInt(xPos.val()));
+				$('.interval.vert').height(parseInt(yPos.val()));
 				/*wmarkWrap.css({
 				'height' : currentHeight,
 				'width' : currentWidth
@@ -923,7 +1018,8 @@ var multiModule = (function(){
 	};
 
 	return {
-		init: initial
+		init: initial,
+		destroy: destroy
 	};
 
 })();
