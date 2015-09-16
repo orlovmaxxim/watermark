@@ -381,11 +381,25 @@ var createWatermark = (function(){
 			type: 'POST',
 			}).done(function(data){
 
-				console.log(data.name);
-				$('#loadFrame').attr('src', './php/download.php?name='+data.name);
+				console.log(data.msg);
+				if(data.msg){
+					$('#loadFrame').attr('src', './php/download.php?name='+data.msg);	
+				}else{
+
+					var 
+						markup =  '<div class="alert" style="position: absolute;top: 0;left: 0;width: 100%;height: 30px;text-align: center;font-size: 20px;margin: auto;right: 0;color: #fff;bottom: 0;background-color: #fd4c4c;"></div>';
+					if($('.alert').length){
+						$('.alert').remove();
+					}
+					$('.main-area').append(markup).find('.alert').text("Произошла ошибка на сервере. Попробуйте другие изображения.").delay(3000).fadeOut();
+					//alert("Произошла ошибка на сервере. Попробуйте другие изображения.");
+				}
+				
 
 			}).fail(function(jqXHR){
 
+				//alert($.parseJSON(jqXHR.responseText).msg);
+				prompt($.parseJSON(jqXHR.responseText).msg);
 				console.log($.parseJSON(jqXHR.responseText).msg);
 
 			}).always(function(){

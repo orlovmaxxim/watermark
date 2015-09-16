@@ -8,6 +8,7 @@ use PHPImageWorkshop\ImageWorkshop;
 
 define("IMG_CONTAINER_WIDTH", 650);
 define("IMG_CONTAINER_HEIGHT", 534);
+define("MAX_UNCOMPRESSED_FILE_SIZE", 16384000);
 
 function generateRandomName($extension = '') {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -21,19 +22,21 @@ function generateRandomName($extension = '') {
 }
 
 function response($status, $message){
-	$statusMsg = '';
+	$response = ['status' => '', 'msg' => $message];
+
+	header('Content-type: json');
 
 	if($status == 200){
 		header("HTTP/1.1 200 OK");
+		$response['status'] = 'ok';
 	}
 
 	if($status == 400){
 		header("HTTP/1.1 400 Bad request");
+		$response['status'] = 'error';
 	}
 
-	header('Content-type: json');
-	echo '{"status": "error", "msg":"Image is to big"}';
-	exit;
+	echo json_encode($response);
 }
 
 if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) && !empty( $_POST ))
@@ -41,8 +44,8 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 
 		if(isset($_FILES['bimg'])&&$_FILES['bimg']['error']==0 && isset($_FILES['wimg'])&&$_FILES['wimg']['error']==0){
 
-			if(isset($_POST['mode'])&&$_POST['mode']==0){
-
+			try {
+				
 				$basicImageLayer = ImageWorkshop::initFromPath($_FILES['bimg']['tmp_name']);
 
 				$basicImageLayerWidth = $basicImageLayer->getWidth();
@@ -50,21 +53,26 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 
 				$imageSize = $basicImageLayerWidth*$basicImageLayerHeight*4;
 
-				//if($imageSize > 33177600){
-				if($imageSize > 63000000){
-					header("HTTp/1.1 400 Bad request");
-					header('Content-type: json');
-					echo '{"status": "error", "msg":"Image is to big"}';
+				if($imageSize > MAX_UNCOMPRESSED_FILE_SIZE){
+
+					response(400,"Image is to big");
 					exit;
 				}
 
 				$waterMarkLayer = ImageWorkshop::initFromPath($_FILES['wimg']['tmp_name']);
+				$waterMarkLayerWidth = $waterMarkLayer->getWidth();
+				$waterMarkLayerHeight = $waterMarkLayer->getHeight();
 				$waterMarkLayer->opacity($_POST['opacity']);
-				$waterMarkLayerXpos = $_POST['xpos'];
-				$waterMarkLayerYpos =  $_POST['ypos'];
-
 				
-				if($basicImageLayerWidth > IMG_CONTAINER_WIDTH || $basicImageLayerHeight > IMG_CONTAINER_HEIGHT){
+				//singlemode
+				if(isset($_POST['mode'])&&$_POST['mode']==0){
+
+
+					$waterMarkLayerXpos = $_POST['xpos'];
+					$waterMarkLayerYpos =  $_POST['ypos'];
+
+
+					if($basicImageLayerWidth > IMG_CONTAINER_WIDTH || $basicImageLayerHeight > IMG_CONTAINER_HEIGHT){
 
 					$relIndex = $basicImageLayerWidth / $basicImageLayerHeight;
 
@@ -78,149 +86,111 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 							$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerHeight) / IMG_CONTAINER_HEIGHT);
 							$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerWidth ) / (IMG_CONTAINER_HEIGHT * $relIndex));
 						}
-
-				}
-
-				$basicImageLayer->addLayer(1, $waterMarkLayer, $waterMarkLayerXpos, $waterMarkLayerYpos, "LT");
- 				$image = $basicImageLayer->getResult();
-
-	 			$tempName = generateRandomName('.jpg');
-				imagejpeg($image, './temp/'.$tempName, 95); // We chose to show a JPG with a quality of 95%
-				
-				header('Content-type: json');
-				echo '{"status": "ok", "name":"'.$tempName.'", "size": "'.$imageSize.'"}';
-
-				exit;
-			}
-
-			if(isset($_POST['mode'])&&$_POST['mode']==1){
-
-				$basicImageLayer = ImageWorkshop::initFromPath($_FILES['bimg']['tmp_name']);
-
-				$basicImageLayerWidth = $basicImageLayer->getWidth();
-				$basicImageLayerHeight = $basicImageLayer->getHeight();
-
-				$imageSize = $basicImageLayerWidth*$basicImageLayerHeight*4;
-
-				//if($imageSize > 33177600){
-				if($imageSize > 63000000){
-					header("HTTp/1.1 400 Bad request");
-					header('Content-type: json');
-					echo '{"status": "error", "msg":"Image is to big"}';
-					exit;
-				}
-
-				$waterMarkLayer = ImageWorkshop::initFromPath($_FILES['wimg']['tmp_name']);
-				$waterMarkLayer->opacity($_POST['opacity']);
-				$waterMarkLayerXpos = $_POST['xposMulti'];
-				$waterMarkLayerYpos =  $_POST['yposMulti'];
-				$patternWidth = $_POST['patternWidth'];
-				$patternHeight = $_POST['patternHeight'];
-
-
-				
-				if($basicImageLayerWidth > IMG_CONTAINER_WIDTH || $basicImageLayerHeight > IMG_CONTAINER_HEIGHT){
-
-					$relIndex = $basicImageLayerWidth / $basicImageLayerHeight;
-
-					if( $basicImageLayerWidth > $basicImageLayerHeight ){
-
-							$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerWidth) / IMG_CONTAINER_WIDTH);
-							$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerHeight ) / (IMG_CONTAINER_WIDTH / $relIndex));
-							
-							$patternWidth = round(($patternWidth * $basicImageLayerWidth) / IMG_CONTAINER_WIDTH);
-							$patternHeight = round(($patternHeight * $basicImageLayerHeight ) / (IMG_CONTAINER_WIDTH / $relIndex));
-
-						} else if ( $basicImageLayerHeight  > $basicImageLayerWidth ){
-
-							$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerHeight) / IMG_CONTAINER_HEIGHT);
-							$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerWidth ) / (IMG_CONTAINER_HEIGHT * $relIndex));
-
-							$patternHeight = round(($patternHeight * $basicImageLayerHeight) / IMG_CONTAINER_HEIGHT);
-							$patternWidth = round(($patternWidth * $basicImageLayerWidth ) / (IMG_CONTAINER_HEIGHT * $relIndex));
-						}
-
-
-				}
-
-				//generate pattern matrix
-				$wmarkCountX = round($basicImageLayerWidth*2/$waterMarkLayer->getWidth());
-				$wmarkCountY = round($basicImageLayerHeight*2/$waterMarkLayer->getHeight());
-
-				$wmarkPosX = $waterMarkLayerXpos;
-				$wmarkPosY = $waterMarkLayerYpos;
-
-				$deltaX = 0;
-				$deltaY = 0;
-
-				if($patternWidth > $wmarkCountX*$waterMarkLayer->getWidth()){
-					$deltaX = round(($patternWidth - $wmarkCountX*$waterMarkLayer->getWidth())/($wmarkCountX-1));	
-				}
-
-				if($patternHeight > $wmarkCountY*$waterMarkLayer->getHeight()){
-					$deltaY = round(($patternHeight - $wmarkCountY*$waterMarkLayer->getHeight())/($wmarkCountY-1));	
-				}
-				
-
-				for ($i = 0; $i < $wmarkCountY; $i++ ){
-					for ($j = 0; $j < $wmarkCountX; $j++ ){
-
-						if($wmarkPosX < $basicImageLayerWidth){
-
-							$basicImageLayer->addLayer(1, $waterMarkLayer, $wmarkPosX, $wmarkPosY, "LT");
-
-							$wmarkPosX += $deltaX + $waterMarkLayer->getWidth();
-
-						} else{
-							break;
-						}
-							
-
 					}
 
 
-					$wmarkPosY += $deltaY + $waterMarkLayer->getHeight();
+					$basicImageLayer->addLayer(1, $waterMarkLayer, $waterMarkLayerXpos, $waterMarkLayerYpos, "LT");
+
+				}
+
+
+				//multimode
+				if(isset($_POST['mode'])&&$_POST['mode']==1){
+
+					$waterMarkLayerXpos = $_POST['xposMulti'];
+					$waterMarkLayerYpos =  $_POST['yposMulti'];
+					$patternWidth = $_POST['patternWidth'];
+					$patternHeight = $_POST['patternHeight'];
+					
+					if($basicImageLayerWidth > IMG_CONTAINER_WIDTH || $basicImageLayerHeight > IMG_CONTAINER_HEIGHT){
+
+						$relIndex = $basicImageLayerWidth / $basicImageLayerHeight;
+
+						if( $basicImageLayerWidth > $basicImageLayerHeight ){
+
+								$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerWidth) / IMG_CONTAINER_WIDTH);
+								$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerHeight ) / (IMG_CONTAINER_WIDTH / $relIndex));
+
+
+								$patternWidth = round(($patternWidth * $basicImageLayerWidth) / IMG_CONTAINER_WIDTH);
+								$patternHeight = round(($patternHeight * $basicImageLayerHeight ) / (IMG_CONTAINER_WIDTH / $relIndex));
+
+							} else if ( $basicImageLayerHeight  > $basicImageLayerWidth ){
+
+								$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerHeight) / IMG_CONTAINER_HEIGHT);
+								$waterMarkLayerXpos = round(($waterMarkLayerXpos * $basicImageLayerWidth ) / (IMG_CONTAINER_HEIGHT * $relIndex));
+						
+
+								$patternHeight = round(($patternHeight * $basicImageLayerHeight) / IMG_CONTAINER_HEIGHT);
+								$patternWidth = round(($patternWidth * $basicImageLayerWidth ) / (IMG_CONTAINER_HEIGHT * $relIndex));
+							}
+					}
+
+					//generate pattern matrix
+					$wmarkCountX = round($basicImageLayerWidth*2/$waterMarkLayerWidth);
+					$wmarkCountY = round($basicImageLayerHeight*2/$waterMarkLayerHeight);
+
 					$wmarkPosX = $waterMarkLayerXpos;
+					$wmarkPosY = $waterMarkLayerYpos;
 
-					if($wmarkPosY > $basicImageLayerHeight){
-						break;
+					$deltaX = 0;
+					$deltaY = 0;
+
+					if($patternWidth > $wmarkCountX*$waterMarkLayerWidth){
+						$deltaX = round(($patternWidth - $wmarkCountX*$waterMarkLayerWidth)/($wmarkCountX-1));	
 					}
+
+					if($patternHeight > $wmarkCountY*$waterMarkLayerHeight){
+						$deltaY = round(($patternHeight - $wmarkCountY*$waterMarkLayerHeight)/($wmarkCountY-1));	
+					}
+					
+
+					for ($i = 0; $i < $wmarkCountY; $i++ ){
+
+						if($wmarkPosY < $basicImageLayerHeight && $wmarkPosY > -$waterMarkLayerHeight){
+
+							for ($j = 0; $j < $wmarkCountX; $j++ ){
+
+								if($wmarkPosX < $basicImageLayerWidth && $wmarkPosX > -$waterMarkLayerWidth){
+
+									$basicImageLayer->addLayer(1, $waterMarkLayer, $wmarkPosX, $wmarkPosY, "LT");
+									$basicImageLayer = ImageWorkshop::initFromResourceVar($basicImageLayer->getResult());
+
+								}
+								$wmarkPosX += $deltaX + $waterMarkLayerWidth;
+							}
+						
+						}
+
+						$wmarkPosY += $deltaY + $waterMarkLayerHeight;
+						$wmarkPosX = $waterMarkLayerXpos;
+
+					}
+
 
 				}
 
+				$image = $basicImageLayer->getResult();
 
-				// $basicImageLayer->addLayer(1, $waterMarkLayer, $waterMarkLayerXpos, $waterMarkLayerYpos, "LT");
-				 $image = $basicImageLayer->getResult();
-
-	 		 	$tempName = generateRandomName('.jpg');
-			 	imagejpeg($image, './temp/'.$tempName, 95); // We chose to show a JPG with a quality of 95%
-				
-				header('Content-type: json');
-				echo '{"status": "ok", "name":"'.$tempName.'", "size": "'.$imageSize.'", "pw": "'.$patternWidth.'", "ph": "'.$patternHeight.'"}';
-
+		 		$tempName = generateRandomName('.jpg');
+				imagejpeg($image, './temp/'.$tempName, 95); 
+					
+				response(200, $tempName);
 				exit;
 
+
+
+
+			} catch (Exception $e) {
+				response(400, $e);
+				exit;
 			}
-			
-			
- 		// 	$image = $basicImageLayer->getResult();
 
- 		// 	$tempName = generateRandomName('.jpg');
-			// imagejpeg($image, './temp/'.$tempName, 95); // We chose to show a JPG with a quality of 95%
 			
-			// header('Content-type: json');
-			// echo '{"status": "ok", "name":"'.$tempName.'", "size": "'.$imageSize.'"}';
-
-			// exit;
-
 		}
-		header("HTTp/1.1 400 Bad request");
-		header('Content-type: json');
-		echo '{"status": "error1"}';
+		response(400,"Error");
 		exit;
-	    
+    
 	}
-	header("HTTp/1.1 400 Bad request");
-	header('Content-type: json');
-	echo '{"status": "error2"}';
-	exit;
+response(400,"Error");
+exit;
