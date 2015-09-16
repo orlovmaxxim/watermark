@@ -1,9 +1,8 @@
 <?php
-
 ini_set('display_errors', 'On');
 //ini_set('memory_limit', '256M' );
-require __DIR__.'/../vendor/autoload.php';
-
+require './vendor/autoload.php';
+require_once ('./php/locale.php');
 use PHPImageWorkshop\ImageWorkshop;
 
 define("IMG_CONTAINER_WIDTH", 650);
@@ -55,7 +54,7 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 
 				if($imageSize > MAX_UNCOMPRESSED_FILE_SIZE){
 
-					response(400,"Image is to big");
+					response(400,$lang["perr_itb"]);
 					exit;
 				}
 
@@ -101,6 +100,8 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 					$waterMarkLayerYpos =  $_POST['yposMulti'];
 					$patternWidth = $_POST['patternWidth'];
 					$patternHeight = $_POST['patternHeight'];
+					$deltaX = $_POST['xpos'];
+					$deltaY = $_POST['ypos'];
 					
 					if($basicImageLayerWidth > IMG_CONTAINER_WIDTH || $basicImageLayerHeight > IMG_CONTAINER_HEIGHT){
 
@@ -115,6 +116,9 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 								$patternWidth = round(($patternWidth * $basicImageLayerWidth) / IMG_CONTAINER_WIDTH);
 								$patternHeight = round(($patternHeight * $basicImageLayerHeight ) / (IMG_CONTAINER_WIDTH / $relIndex));
 
+								$deltaX = round(($deltaX * $basicImageLayerWidth) / IMG_CONTAINER_WIDTH);
+								$deltaY = round(($deltaY * $basicImageLayerHeight ) / (IMG_CONTAINER_WIDTH / $relIndex));
+
 							} else if ( $basicImageLayerHeight  > $basicImageLayerWidth ){
 
 								$waterMarkLayerYpos = round(($waterMarkLayerYpos * $basicImageLayerHeight) / IMG_CONTAINER_HEIGHT);
@@ -123,6 +127,9 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 
 								$patternHeight = round(($patternHeight * $basicImageLayerHeight) / IMG_CONTAINER_HEIGHT);
 								$patternWidth = round(($patternWidth * $basicImageLayerWidth ) / (IMG_CONTAINER_HEIGHT * $relIndex));
+
+								$deltaY = round(($deltaY * $basicImageLayerHeight) / IMG_CONTAINER_HEIGHT);
+								$deltaX = round(($deltaX * $basicImageLayerWidth ) / (IMG_CONTAINER_HEIGHT * $relIndex));
 							}
 					}
 
@@ -133,17 +140,6 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 					$wmarkPosX = $waterMarkLayerXpos;
 					$wmarkPosY = $waterMarkLayerYpos;
 
-					$deltaX = 0;
-					$deltaY = 0;
-
-					if($patternWidth > $wmarkCountX*$waterMarkLayerWidth){
-						$deltaX = round(($patternWidth - $wmarkCountX*$waterMarkLayerWidth)/($wmarkCountX-1));	
-					}
-
-					if($patternHeight > $wmarkCountY*$waterMarkLayerHeight){
-						$deltaY = round(($patternHeight - $wmarkCountY*$waterMarkLayerHeight)/($wmarkCountY-1));	
-					}
-					
 
 					for ($i = 0; $i < $wmarkCountY; $i++ ){
 
@@ -173,7 +169,7 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 				$image = $basicImageLayer->getResult();
 
 		 		$tempName = generateRandomName('.jpg');
-				imagejpeg($image, './temp/'.$tempName, 95); 
+				imagejpeg($image, './php/temp/'.$tempName, 95); 
 					
 				response(200, $tempName);
 				exit;
@@ -182,15 +178,15 @@ if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) &&
 
 
 			} catch (Exception $e) {
-				response(400, $e);
+				response(400, $lang["perr_expt"].$e->getMessage());
 				exit;
 			}
 
 			
 		}
-		response(400,"Error");
+		response(400,$lang["perr_smtwr"]);
 		exit;
     
 	}
-response(400,"Error");
+response(400,$lang["perr_smtwr"]);
 exit;

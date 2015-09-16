@@ -12,4 +12,4 @@ if(isset($_GET['lang']) === true && in_array($_GET['lang'], $allowed_lang) === t
 	$_SESSION['lang'] = 'ru';
 }
 
-include './php/lang/'.$_SESSION['lang'].'.php';
+include './php/lang/'.$_SESSION['lang'].'.php';	

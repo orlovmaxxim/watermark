@@ -142,7 +142,7 @@
                 <div class="disabled-area"></div>
                 <input type="reset" value="<?php echo $lang['clr']; ?>" class="btn neg to-left">
                 <input type="submit" value="<?php echo $lang['dld']; ?>" class="btn to-right"> </section>
-              <input type="hidden" name="mode" value="single" class="hidden-switch">
+              <input type="hidden" name="mode" value="0" class="hidden-switch">
               <input type="hidden" name="opacity" value="100">
               <input type="hidden" name="yposMulti" value="0">
               <input type="hidden" name="xposMulti" value="0">
