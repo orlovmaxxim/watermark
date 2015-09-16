@@ -45,6 +45,11 @@ body {
   color: $color-black;
 }
 
+input{
+  outline: none;
+  cursor: pointer;
+}
+
 /* = Layout
 ================================================*/
 .page {
