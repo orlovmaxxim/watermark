@@ -1,11 +1,45 @@
 "use strict";
 
+//-----localisation-----//
+var lang = (function () {
+		var 
+			ru = {
+				'err_res': 'Разрешение изображения больше 2560x1600!',
+				'err_mb': 'Размер файла больше 5 МБ!',
+				'err_frmt' :'Только картинки PNG и JPEG!',
+				'err_wm_sz' :'Водяной знак больше исходного изображения!',
+				'msg_wt' :'Подождите...',
+				'msg_dld' :'Скачать',
+				'err_srv' : 'Ой... Произошла ошибка на сервере. Попробуйте другие настройки.'
+			},
+			en = {
+				'err_res': 'Image resolution bigger than 2560x1600!',
+				'err_mb': 'File size bigger than 5 MB!',
+				'err_frmt' :'Only PNG and JPEG images!',
+				'err_wm_sz' :'Watermark size bigger than basic image!',
+				'msg_wt' :'Wait...',
+				'msg_dld' :'Download',
+				'err_srv' : 'Oops... Server error. Try to use another options.'
+			};
+		
+		if(window.location.search === "?lang=en"){
+			return en;
+		} else if(window.location.search === "?lang=ru"){
+			return ru;
+		} else {
+			return ru;
+		}
+				
+}());
+
 //-------image upload module--------//
 var imgUpload = (function(){
 
 	var 
 		_isBasicImageLarge = false,
-		MAX_FILE_SIZE = 2000000; //2 MB
+		MAX_FILE_SIZE = 5000000, // this/1000000 MB
+		MAX_UNCOMPRESSED_FILE_SIZE = 16384000;//color image 2560x1600
+
 
 	function initialization(){
 		_setupEventListeners();
@@ -23,17 +57,35 @@ var imgUpload = (function(){
 		var 
 			$this = $(this),
 			img = $this[0].files[0],
-			waterMark = $('.waterMark__img');
+			waterMark = $('.waterMark__img'),
+			waterMarkFile = $('#waterMark'),
+			watermarkInput = waterMarkFile.siblings('.imitation-upload').find('input');
 		//if img not undefind read it from local machine
 		if(img){
 			if(waterMark.length){
-				//TODO: change to wm clear function
 				waterMark.remove();
+				watermarkInput.val('');
+				_resetFile(waterMarkFile);
 			}
+
+			if($('[name=mode]').val() === '0'){
+				singleModule.destroy();
+			} else {
+				multiModule.destroy();
+				$('.switcher').toggleClass('active');
+			}
+
+			$('.disabled-area').css('display', 'block');
+
 			//call file reader with event target scope
 			_readFile.call(this, img, _basicImageLoadCallback);
 		}
 		
+	}
+
+	function _resetFile(el) {
+	 	el.wrap('<form>').closest('form').get(0).reset();
+	 	el.unwrap();
 	}
 
 	//callback function for basikImage loading
@@ -49,19 +101,19 @@ var imgUpload = (function(){
 		//remove image if already exist
 		if(basicImage.length){
 			basicImage.remove();
+			imgContainer.removeAttr('style');
 			_isBasicImageLarge = false;
 		}
 		//create new image 
-		basicImage = imgContainer.prepend(imgMarkup).find('.basicImage__img').attr('src', e.target.result);
-		waterMark.prop('disabled',false);
 
-		$this.siblings('.imitation-upload').find('input').val(img.name);
+		basicImage = imgContainer.prepend(imgMarkup).find('.basicImage__img').attr('src', e.target.result);
 
 		//position image and show after load
 		basicImage.on('load', function(e){
 			var 
 				$this = $(this),
-				imgContainer = $('.main-area'),
+				imgContainer = $('.main-image-wrapper'),
+				input = $('#basicImage').closest('.custom-upload'),
 				imgNaturalWidth = $this.prop('naturalWidth'),
 				imgNaturalHeight = $this.prop('naturalHeight'),
 				imgWidth = $this.width(),
@@ -69,35 +121,69 @@ var imgUpload = (function(){
 				imgContainerWidth = imgContainer.width(),
 				imgContainerHeight = imgContainer.height();
 
+
+			if((imgNaturalWidth * imgNaturalHeight * 4) > MAX_UNCOMPRESSED_FILE_SIZE){
+
+				_clearInput(input);
+				//input.tooltip({'position': 'top', 'content': 'Разрешение изображения больше 4К!'});
+				input.tooltip({'position': 'top', 'content': lang.err_res });
+				return;
+			}
+
 			if(imgNaturalWidth > imgContainerWidth || imgNaturalHeight > imgContainerHeight){
 
 				_isBasicImageLarge = true;
 
 				if(imgNaturalWidth > imgNaturalHeight){
 
-					$this.css('top', Math.round((imgContainerHeight - imgHeight)/2) + 'px' );
+					//$this.css('top', Math.round((imgContainerHeight - imgHeight)/2) + 'px' );
+
+					imgContainer.css({
+						'height' : imgHeight
+					});
 
 				} else {
 
-					$this.css('left', Math.round((imgContainerWidth - imgWidth)/2) + 'px' );	
+					//$this.css('left', Math.round((imgContainerWidth - imgWidth)/2) + 'px' );	
+					
+					imgContainer.css({
+						'width' : imgWidth
+					});
 				}
 
 			} else {
 
-				$this.css({
-					'top': Math.round((imgContainerHeight - imgHeight)/2) + 'px',
-					'left': Math.round((imgContainerWidth - imgWidth)/2) + 'px' 	
+				// $this.css({
+				// 	'top': Math.round((imgContainerHeight - imgHeight)/2) + 'px',
+				// 	'left': Math.round((imgContainerWidth - imgWidth)/2) + 'px' 	
+				// });
+				
+				imgContainer.css({
+					'width' : imgWidth,
+					'height' : imgHeight
 				});
 				
 			}
+
+			// imgContainer.css({
+			// 	'width' : imgWidth,
+			// 	'height' : imgHeight
+			// });
+
 			$this.css('opacity', 1);
-			$('.main-image-wrapper').css({
-						/*'position' : 'relative',*/
-						'left' : $('.basicImage__img').css('left'),
-						'top' : $('.basicImage__img').css('top')
-					})
+			// $('.main-image-wrapper').css({
+			// 			/*'position' : 'relative',*/
+			// 			'left' : $('.basicImage__img').css('left'),
+			// 			'top' : $('.basicImage__img').css('top')
+			// 		})
 
 		});
+
+
+			waterMark.prop('disabled',false);
+
+			$this.siblings('.imitation-upload').find('input').val(img.name);
+
 	}
 
 	//waterMark onchage handler
@@ -126,6 +212,14 @@ var imgUpload = (function(){
 		//remove image if already exist
 		if(waterMark.length){
 			waterMark.remove();
+			imgContainer.removeAttr('style');
+		}
+
+		if($('[name=mode]').val() === '0'){
+				singleModule.destroy();
+		} else {
+				multiModule.destroy();
+				$('.switcher').toggleClass('active');
 		}
 
 		//append new image
@@ -154,10 +248,20 @@ var imgUpload = (function(){
 				relImgHeight = 0,
 				relIndex = imgNaturalWidth / imgNaturalHeight;
 
+			if((imgNaturalWidth * imgNaturalHeight * 4) > MAX_UNCOMPRESSED_FILE_SIZE){
+
+				_clearInput(input);
+				//input.tooltip({'position': 'top', 'content': 'Разрешение изображения больше 4К!'});
+				input.tooltip({'position': 'top', 'content': lang.err_res});
+				return;
+			}
+
 			if(imgNaturalWidth > basicImageNaturalWidth || imgNaturalHeight > basicImageNaturalHeight){
 				$this.remove();
 				console.log('tooltip: image is to big');
-				input.tooltip({'position': 'top', 'content': 'Водяной знак больше исходного изображения!'});
+				_clearInput(input);
+				//input.tooltip({'position': 'top', 'content': 'Водяной знак больше исходного изображения!'});
+				input.tooltip({'position': 'top', 'content': lang.err_wm_sz});
 			} else {
 
 				if( _isBasicImageLarge ){
@@ -187,10 +291,10 @@ var imgUpload = (function(){
 				 });
 				
 			}		
-					$('.main-image-wrapper').css({
-						'position' : 'relative',
-					})
-					drag();
+					// $('.main-image-wrapper').css({
+					// 	'position' : 'relative',
+					// })
+					drag('single');
 					singleModule.init();
 		});
 		
@@ -213,7 +317,8 @@ var imgUpload = (function(){
 
 		$(reader).on('abort', $.proxy(function(){
 			console.log('tooltip: image size is to big');
-			$(this).tooltip({'position': 'top', 'content': 'Размер файла больше 2 МБ!'});
+			//$(this).tooltip({'position': 'top', 'content': 'Размер файла больше 2 МБ!'});
+			$(this).tooltip({'position': 'top', 'content': lang.err_mb});
 		},this));
 
 		//show progressbar
@@ -225,14 +330,23 @@ var imgUpload = (function(){
 			if(oe.lengthComputable){
 				progress = parseInt( ((oe.loaded / oe.total) * 100), 10);
 				console.log('progress: '+progress);
+				
 			}
 		});
+
 		if(file.type.match('image\/(png|jpe?g)')){
 			reader.readAsDataURL(file);
 		} else {
-			$(this).closest('.custom-upload').tooltip({'position': 'top', 'content': 'Только картинки PNG и JPEG!'});
+			//$(this).closest('.custom-upload').tooltip({'position': 'top', 'content': 'Только картинки PNG и JPEG!'});
+			$(this).closest('.custom-upload').tooltip({'position': 'top', 'content': lang.err_frmt});
 		}
 		
+	}
+
+	function _clearInput(input){
+		var
+			inputField = input.find('input[type=text]');
+		inputField.val('');
 	}
 
 
@@ -245,15 +359,174 @@ var imgUpload = (function(){
 //---------create watermark module----------//
 var createWatermark = (function(){
 
+	var
+		_submitFlag = true;
+
 	function initialization(){
 		_setupEventListeners();
 	}
 
 	function _setupEventListeners(){
-		console.log('okoko');
+		$('#main-form').on('submit', _submitForm)
+						.on('reset', _resetForm);
+	}
+
+	function _submitForm(e){
+		e.preventDefault();
+
+		var
+			$this = $(this),
+			submitBtn = $this.find('input[type=submit]');
+
+		if(_submitFlag){
+
+			_submitFlag = false;
+			submitBtn.val(lang.msg_wt);
+
+			$.ajax({
+			url: './create.php',
+			data: new FormData(this),
+			contentType: false,
+			processData: false,
+			type: 'POST',
+			}).done(function(data){
+
+				console.log(data.msg);
+				if(data.msg){
+
+					$('#loadFrame').attr('src', './php/download.php?name='+data.msg);	
+				
+				}else{
+
+					_showAlert(lang.err_srv);
+					
+				}
+				
+
+			}).fail(function(jqXHR){
+
+				_showAlert($.parseJSON(jqXHR.responseText).msg);
+
+			}).always(function(){
+
+				_submitFlag = true;
+				submitBtn.val(lang.msg_dld);
+
+			});
+		}
+		
+
+	}
+
+	function _showAlert(msg){
+		var 
+			markup =  '<div class="alert"></div>',
+			alert = $('.alert');
+
+		if(alert.length){
+			alert.remove();
+		}
+		$('.main-area').append(markup).find('.alert').text(msg).delay(3000).fadeOut();
+	}
+
+	function _resetForm(e){
+		e.preventDefault();
+
+		if($('[name=mode]').val() === '0'){
+			singleModule.destroy();
+			singleModule.init();
+		} else {
+			multiModule.destroy();
+			multiModule.init();
+		}
+
 	}
 
 	return {
+		init: initialization
+	}
+
+}());
+
+//-----sharing module-----//
+var shareModule = (function(){
+
+	function initialization(){
+		_setupEventListeners();
+	}
+
+	function _setupEventListeners(){
+		$('.share-icon, .share-socials-list').on('mouseenter', function(e){
+			$('.share-icon').addClass('active');
+		}).on('mouseleave', function(e){
+			$('.share-icon').removeClass('active');
+		});
+		$('.share-socials-link').on('click', _clickHandler);
+	}
+
+	function _clickHandler(e){
+		e.preventDefault;
+
+		var
+			$this = $(this),
+			info = {
+				url: 'http://homework.sarychevstas.ru/gp3',
+				title: 'Генератор водяных знаков',
+				img: 'http://homework.sarychevstas.ru/gp3/img/group-logo.png',
+				text: 'Выпускной проект #3 команды "Супер группа".'
+			};
+
+		if($this.hasClass('vk-icon')){
+
+			_vk(info.url, info.title, info.img, info.text);
+
+		} else if ($this.hasClass('fb-icon')){
+
+			_fb(info.url, info.title, info.img, info.text);
+
+		} else if ($this.hasClass('tw-icon')){
+
+			_tw(info.url, info.title);
+
+		}
+	}
+
+	function _vk(purl, title, img, text) {
+		var url = '';
+        url  = 'http://vkontakte.ru/share.php?';
+        url += 'url='          + encodeURIComponent(purl);
+        url += '&title='       + encodeURIComponent(title);
+        url += '&description=' + encodeURIComponent(text);
+        url += '&image='       + encodeURIComponent(img);
+        url += '&noparse=true';
+		_popup(url);
+    }
+
+    function _fb(purl, title, img, text) {
+    	var url = '';
+        url  = 'http://www.facebook.com/sharer.php?s=100';
+        url += '&p[title]='     + encodeURIComponent(title);
+        url += '&p[summary]='   + encodeURIComponent(text);
+        url += '&p[url]='       + encodeURIComponent(purl);
+        url += '&p[images][0]=' + encodeURIComponent(img);
+        _popup(url);
+    }
+
+    function _tw(purl, title) {
+    	var url = '';
+        url  = 'http://twitter.com/share?';
+        url += 'text='      + encodeURIComponent(title);
+        url += '&url='      + encodeURIComponent(purl);
+        url += '&counturl=' + encodeURIComponent(purl);
+        _popup(url);
+    }
+
+    function _popup(url){
+    	window.open(url,'','toolbar=0,status=0,width=626,height=436');
+    }
+
+	return {
+
 		init: initialization
 	}
 
@@ -273,21 +546,39 @@ var positionModule = (function(){
 	}
 
 	// Активируем мульти-режим
-	var _multiTypeActive = function() {
+	var _multiTypeActive = function(e) {
+		e.preventDefault();
 		$('.switchers').children('.switcher.single').removeClass('active');
 		$('.switchers').children('.switcher.multi').addClass('active');
-		console.log("Multi active");
-		multiModule.init();
-		drag();
+		
+
+		if($('[name=mode]').val()==='0'){
+			console.log("Multi active");
+		
+			singleModule.destroy();
+			multiModule.init();
+			drag('multi');
+
+		}
+
+		
 	}
 
 	// Активируем одиночный режим
-	var _singleTypeActive = function() {
+	var _singleTypeActive = function(e) {
+		e.preventDefault();
 		$('.switchers').children('.switcher.multi').removeClass('active');
 		$('.switchers').children('.switcher.single').addClass('active');
-		console.log("Single active");
-		singleModule.init();
-		drag();
+		
+
+
+		if($('[name=mode]').val()==='1'){
+			console.log("Single active");
+			
+			multiModule.destroy();
+			singleModule.init();
+			drag('single');
+		}
 		/*return false;*/
 	}
 
@@ -303,6 +594,24 @@ var singleModule = (function(){
 
 	var initial = function () {
 		_setUpListeners();
+		$('[name=mode]').val(0);
+	};
+
+	var destroy = function() {
+		var 
+			inputs = $('input[type=hidden]').add('input[name=xpos], input[name=ypos]'),
+			slider = $('.opacity-slider'),
+			grid = $('.grid-list'),
+			waterMark = $('.main-wmark-wrapper');
+
+		inputs.val('0').filter('[name=opacity]').val(100);
+		grid.find('.active').removeClass('active');
+		slider.slider('value', 100);
+		waterMark.css({'left': 0 , 'top': 0, 'opacity': 1});
+		$('[name = xpos]').off('keyup change');
+		$('[name = ypos]').off('keyup change');
+		$('.grid-item').off('click');
+		$('.control-arrow').off('click');
 	};
 
 	var _setUpListeners = function () {
@@ -310,7 +619,7 @@ var singleModule = (function(){
 		$('[name = ypos]').on('keyup change', _writeNumberInputY);
 		$('.grid-item').on('click', _squarePosActive);
 		$('.control-arrow').on('click', _arrowsPosExchange);
-	}
+	};
 
 	// позиционируем ватермарк через сетку
 	var _squarePosActive = function() {
@@ -397,6 +706,7 @@ var singleModule = (function(){
 		if($this.val() > (imgWidth - wmarkWidth)) {
 			$this.val(imgWidth - wmarkWidth);
 		}
+
 		$('.main-wmark-wrapper').css({
 			'left' : $this.val() + 'px'
 		})
@@ -436,11 +746,9 @@ var singleModule = (function(){
 				currentPosX = parseInt(wmarkWrap.css('left'), 10),
 				currentPosY = parseInt(wmarkWrap.css('top'), 10),
 				maxPosX = imgWrap.outerWidth() - wmarkWrap.outerWidth(),
-        maxPosY = imgWrap.outerHeight() - wmarkWrap.outerHeight();
-				/*currentWidth = wmarkWrap.css('width'), //пока за место проверки
-				currentHeight = wmarkWrap.css('height'); // пока за место проверки*/
+        		maxPosY = imgWrap.outerHeight() - wmarkWrap.outerHeight();
 
-				if( (e.target.className == "control-arrow top top-x") && (currentPosX!=maxPosX)) {
+				if( (e.target.className == "control-arrow top top-x") && (currentPosX<maxPosX)) {
 
 					wmarkWrap.css('left', currentPosX + minStepConst);
 					$('[name = xpos]').val(currentPosX + minStepConst);
@@ -461,16 +769,13 @@ var singleModule = (function(){
 								$('[name = ypos]').val(currentPosY + minStepConst);
 					}
 				
-				/*wmarkWrap.css({
-				'height' : currentHeight,
-				'width' : currentWidth
-			})*/
 				$('.grid-item').removeClass('active');
 
 	};
 	
 	return {
-		init: initial
+		init: initial,
+		destroy: destroy
 	};
 
 })();
@@ -478,19 +783,241 @@ var singleModule = (function(){
 var multiModule = (function(){
 
 	var initial = function () {
+		var
+			markup = '<div class="intervals"><div class="interval hor"></div><div class="interval vert"></div></div>';
+		
 		_setUpListeners();
+		_reproduceWatermark();
+		$('[name=mode]').val(1);
+		$('.controls').addClass('for-multi');
+		$('div.location').prepend(markup);
+	};
+
+	var destroy = function() {
+		var 
+			inputs = $('input[type=hidden]').add('input[name=xpos], input[name=ypos]'),
+			slider = $('.opacity-slider'),
+			grid = $('.grid-list'),
+			waterMark = $('.main-wmark-wrapper'),
+			clonnedWaterMark = waterMark.find('.clonned'),
+			interval = $('.interval');
+
+		inputs.val('0').filter('[name=opacity]').val(100);
+		grid.find('.active').removeClass('active');
+		slider.slider('value', 100);
+		clonnedWaterMark.remove();
+		waterMark.removeAttr('style').find('img').css('margin', 0);
+		interval.filter('.hor').width(1).end().filter('.vert').height(1);
+		$('.controls').removeClass('for-multi');
+		$('.intervals').remove();
+		$('[name = xpos]').off('keyup change');
+		$('[name = ypos]').off('keyup change');
+		$('.control-arrow').off('click');
+		
 	};
 
 	var _setUpListeners = function () {
-		
+		$('[name = xpos]').on('keyup change', _writeNumberInputX);
+		$('[name = ypos]').on('keyup change', _writeNumberInputY);
+		$('.control-arrow').on('click', _arrowsPosExchange);
 	}
 
-	var reproduceWaterm = function () {
+	// вводим значение в инпут поле X
+	var _writeNumberInputX = function () {
+
+		var $this = $(this),
+			basicImage = $('.main-image-wrapper'),
+			waterMarkContainer = $('.main-wmark-wrapper'),
+			waterMark = waterMarkContainer.find('img'),
+			waterMarkSizes = { width: waterMark.width(), height: waterMark.height() },
+			waterMarkCounts = { x: Math.round(basicImage.width()*2 / waterMarkSizes.width), y: Math.round(basicImage.height()*2 / waterMarkSizes.height) };
 		
+		//вызываем функция ввода только чисел
+		onlyInteger($this);
+		
+		if(parseInt($this.val()) < 0 || $this.val().length === 0){
+			$this.val(0);
+		} else if(parseInt($this.val()) > 95){
+			$this.val(95);
+		}
+
+
+		waterMarkContainer.width(waterMarkSizes.width*waterMarkCounts.x + parseInt($this.val())*(waterMarkCounts.x-1) );
+	
+		_setPatternSizes();
+		if(parseInt($this.val()) === 0){
+			$('.interval.hor').width(1);
+		}else{
+			$('.interval.hor').width(parseInt($this.val()));
+		}
+		
+
+		$.each($('.waterMark__img'), function(idx, val){
+			if(idx%waterMarkCounts.x != 0){
+
+				$(val).css('margin-left', $this.val()+'px');
+
+			}
+		});
+
+	};
+
+	// вводим значение в инпут поле Y
+	var _writeNumberInputY = function () {
+		//сброс подсветки с сетки
+		$('.grid-item').removeClass('active');
+
+		var $this = $(this),
+			basicImage = $('.main-image-wrapper'),
+			waterMarkContainer = $('.main-wmark-wrapper'),
+			waterMark = waterMarkContainer.find('img'),
+			waterMarkSizes = { width: waterMark.width(), height: waterMark.height() },
+			waterMarkCounts = { x: Math.round(basicImage.width()*2 / waterMarkSizes.width), y: Math.round(basicImage.height()*2 / waterMarkSizes.height) };
+	
+
+		//вызываем функция ввода только чисел
+		onlyInteger($this);
+			
+		if(parseInt($this.val()) < 0 || $this.val().length === 0 ){
+			$this.val(0);
+		} else if(parseInt($this.val()) > 95){
+			$this.val(95);
+		}	
+
+		waterMarkContainer.height(waterMarkSizes.height*waterMarkCounts.y + parseInt($this.val())*(waterMarkCounts.y-1) );
+		_setPatternSizes();
+		if(parseInt($this.val()) === 0){
+			$('.interval.vert').height(1);
+		} else {
+			$('.interval.vert').height(parseInt($this.val()));
+		}
+		
+
+		$.each($('.waterMark__img'), function(idx, val){
+					
+			$(val).css('margin-bottom', $this.val()+'px');
+	
+		});
+
+	};
+
+	var _setPatternSizes = function(){
+		var
+			waterMarkContainer = $('.main-wmark-wrapper');
+
+		$('[name=patternWidth]').val(waterMarkContainer.width());
+		$('[name=patternHeight').val(waterMarkContainer.height());
+	}
+
+	var _reproduceWatermark = function () {
+		
+		var 
+			basicImage = $('.main-image-wrapper'),
+			waterMarkContainer = $('.main-wmark-wrapper'),
+			waterMark = waterMarkContainer.find('img'),
+			waterMarkSizes = { width: waterMark.width(), height: waterMark.height() },
+			waterMarkCounts = { x: Math.round(basicImage.width()*2 / waterMarkSizes.width), y: Math.round(basicImage.height()*2 / waterMarkSizes.height) };
+		
+		waterMarkContainer.width(waterMarkSizes.width * waterMarkCounts.x).height(waterMarkSizes.height * waterMarkCounts.y);
+		for (var i = 0; i < waterMarkCounts.x * waterMarkCounts.y - 1; i++ ){
+			waterMark.clone().addClass('clonned').appendTo(waterMarkContainer);
+		}
+
+		$('.waterMark__img').css('margin-left', 0);
+		_setPatternSizes();
+			
+
+	};
+
+	//меняем координаты стрелками
+	var _arrowsPosExchange = function(e) {
+		e.preventDefault();
+
+
+		var $this = $(this),
+			minStepConst = 1,
+			basicImage = $('.main-image-wrapper'),
+			waterMarkContainer = $('.main-wmark-wrapper'),
+			waterMark = waterMarkContainer.find('img'),
+			waterMarkSizes = { width: waterMark.width(), height: waterMark.height() },
+			waterMarkCounts = { x: Math.round(basicImage.width()*2 / waterMarkSizes.width), y: Math.round(basicImage.height()*2 / waterMarkSizes.height) },
+			xPos = $('input[name=xpos]'),
+			yPos = $('input[name=ypos]');
+			
+
+				if (e.target.className === "control-arrow top top-x" && xPos.val() < 95) {
+
+					
+					$.each($('.waterMark__img'), function(idx, val){
+						if(idx%waterMarkCounts.x != 0){
+							var 
+								offset = $(val).css('margin-left');
+
+							$(val).css('margin-left', parseInt(offset)+minStepConst );
+
+						}
+					});
+					waterMarkContainer.width(waterMarkContainer.width() + minStepConst*(waterMarkCounts.x-1) );
+					xPos.val(parseInt(xPos.val())+minStepConst);
+					//$('[name = xpos]').val(currentPosX + minStepConst);
+
+				} else if(e.target.className === "control-arrow btm btm-x" && xPos.val() > 0) {
+
+						$.each($('.waterMark__img'), function(idx, val){
+						if(idx%waterMarkCounts.x != 0){
+							var 
+								offset = $(val).css('margin-left');
+
+							$(val).css('margin-left', parseInt(offset)-minStepConst );
+
+						}
+					});
+					waterMarkContainer.width(waterMarkContainer.width() - minStepConst*(waterMarkCounts.x-1) );
+					xPos.val(parseInt(xPos.val())-minStepConst);
+
+					} else if(e.target.className === "control-arrow top top-y" && yPos.val() < 95) {
+
+						$.each($('.waterMark__img'), function(idx, val){
+							
+								var 
+									offset = $(val).css('margin-bottom');
+
+								$(val).css('margin-bottom', parseInt(offset)+minStepConst );
+
+							
+						});
+						waterMarkContainer.height(waterMarkContainer.height() + minStepConst*(waterMarkCounts.y-1) );
+						yPos.val(parseInt(yPos.val())+minStepConst);
+					} else if(e.target.className === "control-arrow btm btm-y" && yPos.val() > 0){
+
+						$.each($('.waterMark__img'), function(idx, val){
+							
+								var 
+									offset = $(val).css('margin-bottom');
+
+								$(val).css('margin-bottom', parseInt(offset)-minStepConst );
+
+							
+						});
+						waterMarkContainer.height(waterMarkContainer.height() - minStepConst*(waterMarkCounts.y-1) );
+						yPos.val(parseInt(yPos.val())-minStepConst);
+					}
+				_setPatternSizes();
+				$('.interval.hor').width(parseInt(xPos.val()));
+				$('.interval.vert').height(parseInt(yPos.val()));
+				if(parseInt(xPos.val()) === 0){
+					$('.interval.hor').width(1);
+				} 
+				if (parseInt(yPos.val()) === 0){
+					$('.interval.vert').height(1);
+				}
+				
+
 	};
 
 	return {
-		init: initial
+		init: initial,
+		destroy: destroy
 	};
 
 })();

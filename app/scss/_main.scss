@@ -29,14 +29,30 @@
   max-height: 100%;
 }
 
-.main-wmark-wrapper {
+
+.main-image-wrapper {
+  right: 0;
+  bottom: 0;
+  margin: auto; 
+}
+
+.main-wmark-wrapper, .main-image-wrapper {
   position: absolute;
   left: 0;
   top: 0;
   overflow: hidden;
+  transition: left .5s, top .5s;
 }
 .watermark {
   /* cursor: move; */
+  float: left;
+}
+
+.main-wmark-wrapper{
+  @extend .cfix;
+}
+
+.clonned, .waterMark__img {
   float: left;
 }
 
